@@ -1,5 +1,6 @@
 #include "Main.h"
 //Callbacks
+// TEST COMMIT PUSH
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	//Callbacks for winapi 
