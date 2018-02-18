@@ -631,6 +631,10 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 	// Replace this with your code
 	// GenerateCube(a_fRadius * 2.0f, a_v3Color);
 
+	// (x, y, z) = (sin(Pi * m/M) cos(2Pi * n/N), sin(Pi * m/M) sin(2Pi * n/N), cos(Pi * m/M))
+	// Where m is current latitude and M is last latitude in array
+	// Where n is current longitude and N is last longitude in array
+
 	vector3 bottomSphere(0, 0, a_fRadius - (2*a_fRadius)); // COOR: bottom of the sphere
 	vector3 topSphere(0, 0, a_fRadius + a_fRadius); // COOR: top of the sphere
 
@@ -653,7 +657,7 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 
 		coorArray.push_back(currentPoint); // push back x y z coord into array
 
-										   // DRAW SHAPE
+		// DRAW SHAPE
 		if (i != 0) {
 
 			// Bottom Base
@@ -670,12 +674,68 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 				vector3(coorArray[i].x, coorArray[i].y, a_fRadius),
 				topSphere);
 
+
+			// (x, y, z) = (sin(Pi * m/M) cos(2Pi * n/N), sin(Pi * m/M) sin(2Pi * n/N), cos(Pi * m/M))
+			// Where m is current latitude and M is last latitude in array
+			// Where n is current longitude and N is last longitude in array
+
+			// Build sphere with latitude and logitude coordinate plotting
+
+			AddVertexPosition(
+				vector3(
+					((float)sin(PI*coorArray[i - 1].x)) * ((float)cos(TWOPI * coorArray[i - 1].z)),
+					((float)sin(PI*coorArray[i - 1].x)) * ((float)sin(TWOPI * coorArray[i - 1].z)),
+					((float)cos(PI * coorArray[i - 1].x))
+				)
+			);
+
 			// Middle
-			AddQuad(
-				vector3(coorArray[i - 1].x, coorArray[i - 1].y, 0.0f), // bottom (i-1) left (0)
-				vector3(coorArray[i].x, coorArray[i].y, 0.0f), // bottom right
-				vector3(coorArray[i - 1].x, coorArray[i - 1].y, a_fRadius), // top left
-				vector3(coorArray[i].x, coorArray[i].y, a_fRadius)); // top (i) right (a_fHeight)
+			//AddQuad(
+			//	vector3(
+			//		((float)sin(PI*coorArray[i - 1].x)) * ((float)cos(TWOPI * coorArray[i - 1].z)),
+			//		((float)sin(PI*coorArray[i - 1].x)) * ((float)sin(TWOPI * coorArray[i - 1].z)),
+			//		((float)cos(PI * coorArray[i - 1].x))
+			//	),
+			//	vector3(
+			//		((float)sin(PI*coorArray[i].x)) * ((float)cos(TWOPI * coorArray[i - 1].z)),
+			//		((float)sin(PI*coorArray[i].x)) * ((float)sin(TWOPI * coorArray[i - 1].z)),
+			//		((float)cos(PI * coorArray[i].x))
+			//	),
+			//	vector3(
+			//		((float)sin(PI*coorArray[i - 1].x)) * ((float)cos(TWOPI * coorArray[i].z)),
+			//		((float)sin(PI*coorArray[i - 1].x)) * ((float)sin(TWOPI * coorArray[i].z)),
+			//		((float)cos(PI * coorArray[i - 1].x))
+			//	),
+			//	vector3(
+			//	((float)sin(PI*coorArray[i].x)) * ((float)cos(TWOPI * coorArray[i].z)),
+			//		((float)sin(PI*coorArray[i].x)) * ((float)sin(TWOPI * coorArray[i].z)),
+			//		((float)cos(PI * coorArray[i].x))
+			//	)
+			//);
+
+			//// Middle
+			//AddQuad(
+			//	vector3(
+			//	((float)sin(PI*coorArray[i].x)) * ((float)cos(TWOPI * coorArray[i].z)),
+			//		((float)sin(PI*coorArray[i].x)) * ((float)sin(TWOPI * coorArray[i].z)),
+			//		((float)cos(PI * coorArray[i].x))
+			//	),
+			//	vector3(
+			//	((float)sin(PI*coorArray[i - 1].x)) * ((float)cos(TWOPI * coorArray[i].z)),
+			//		((float)sin(PI*coorArray[i - 1].x)) * ((float)sin(TWOPI * coorArray[i].z)),
+			//		((float)cos(PI * coorArray[i - 1].x))
+			//	),
+			//	vector3(
+			//	((float)sin(PI*coorArray[i].x)) * ((float)cos(TWOPI * coorArray[i - 1].z)),
+			//		((float)sin(PI*coorArray[i].x)) * ((float)sin(TWOPI * coorArray[i - 1].z)),
+			//		((float)cos(PI * coorArray[i].x))
+			//	),
+			//	vector3(
+			//	((float)sin(PI*coorArray[i - 1].x)) * ((float)cos(TWOPI * coorArray[i - 1].z)),
+			//		((float)sin(PI*coorArray[i - 1].x)) * ((float)sin(TWOPI * coorArray[i - 1].z)),
+			//		((float)cos(PI * coorArray[i - 1].x))
+			//	)
+			//);
 
 		}
 
