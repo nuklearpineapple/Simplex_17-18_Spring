@@ -290,7 +290,7 @@ void MyMesh::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivisions,
 
 	float currentX = a_fRadius; // radius is current x + radius x=0
 	float currentY = 0; // radius is current y y=0
-	float step = (TWOPI / a_nSubdivisions); // Define Angle based on subdivisions
+	float step = ((float)TWOPI / a_nSubdivisions); // Define Angle based on subdivisions
 	float currentAngle = step; // store angle
 
 	for (int i = 0; i <= a_nSubdivisions; i++) {
@@ -352,7 +352,7 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 
 	float currentX = a_fRadius; // radius is current x + radius x=0
 	float currentY = 0; // radius is current y y=0
-	float step = (TWOPI / a_nSubdivisions); // Define Angle based on subdivisions
+	float step = ((float)TWOPI / a_nSubdivisions); // Define Angle based on subdivisions
 	float currentAngle = step; // store angle
 
 	for (int i = 0; i <= a_nSubdivisions; i++) {
@@ -381,7 +381,7 @@ void MyMesh::GenerateCylinder(float a_fRadius, float a_fHeight, int a_nSubdivisi
 				cylHeight);
 			AddTri(
 				vector3(coorArray[i-1].x, coorArray[i-1].y, a_fHeight), 
-				vector3(coorArray[i].x, coorArray[i].y, 1.0f), 
+				vector3(coorArray[i].x, coorArray[i].y, a_fHeight), 
 				cylHeight);
 			
 			// Walls
@@ -430,103 +430,8 @@ void MyMesh::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float a_fH
 	// Replace this with your code
 	// GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
 	
-	vector3 cylCenter(0, 0, 0); // COOR: Center of the base 
-	vector3 cylHeight(0, 0, a_fHeight); // COOR: Height of the cylinder
 
-	std::vector<vector3> coorArray; // Point Coordinates Array
 
-	float currentInnerX = a_fInnerRadius; // radius is current x + radius x=0
-	float currentOuterX = a_fOuterRadius; // radius is current x + radius x=0
-
-	float currentInnerY = 0; // radius is current y y=0
-	float currentOuterY = 0; // radius is current y y=0
-
-	float step = (TWOPI / a_nSubdivisions); // Define Angle based on subdivisions
-	float currentAngle = step; // store angle
-
-	for (int i = 0; i <= a_nSubdivisions; i++) {
-
-		// nex x y angles for inside
-		float newInnerX = (float)cos(currentAngle); // cosine of angle
-		float newInnerY = (float)sin(currentAngle); // sin of angle
-
-		// nex x y angles for outside
-		float newOuterX = (float)cos(currentAngle); // cosine of angle
-		float newOuterY = (float)sin(currentAngle); // sin of angle
-
-		// nex x y adjustments for inside
-		newInnerX = newInnerX * a_fInnerRadius;
-		newInnerY = newInnerY * a_fInnerRadius;
-
-		// new x y adjustments for outside
-		newOuterX = newOuterX * a_fOuterRadius;
-		newOuterY = newOuterY * a_fOuterRadius;
-
-		vector3 currentInnerPoint = vector3(currentInnerX, currentInnerY, 0); // generate x y z coord
-		vector3 currentOuterPoint = vector3(currentOuterX, currentOuterY, 0); // generate x y z coord
-
-		coorArray.push_back(currentInnerPoint); // push back x y z coord into array
-
-		// DRAW INNER SHAPE
-		if (i != 0) {
-
-			// Top Wall
-			AddQuad(
-				vector3(coorArray[i - 1].x, coorArray[i - 1].y, a_fHeight), // bottom (i-1) left (0)
-				vector3(coorArray[i].x, coorArray[i].y, a_fHeight), // bottom right
-				vector3(coorArray[i - 1].x, coorArray[i - 1].y, a_fHeight), // top left
-				vector3(coorArray[i].x, coorArray[i].y, a_fHeight)); // top (i) right (a_fHeight)
-
-			// Bottom Wall
-			AddQuad(
-				vector3(coorArray[i - 1].x, coorArray[i - 1].y, 0.0f), // bottom (i-1) left (0)
-				vector3(coorArray[i].x, coorArray[i].y, 0.0f), // bottom right
-				vector3(coorArray[i - 1].x, coorArray[i - 1].y, 0.0f), // top left
-				vector3(coorArray[i].x, coorArray[i].y, 0.0f)); // top (i) right (a_fHeight)
-			
-			// Side Wall
-			AddQuad(
-				vector3(coorArray[i - 1].x, coorArray[i - 1].y, 0.0f), // bottom (i-1) left (0)
-				vector3(coorArray[i].x, coorArray[i].y, 0.0f), // bottom right
-				vector3(coorArray[i - 1].x, coorArray[i - 1].y, a_fHeight), // top left
-				vector3(coorArray[i].x, coorArray[i].y, a_fHeight)); // top (i) right (a_fHeight)
-		}
-
-		coorArray.push_back(currentOuterPoint); // push back x y z coord into array
-
-		// DRAW OUTER SHAPE
-		//if (i != 0) {
-
-		//	// Top Wall
-		//	AddQuad(
-		//		vector3(coorArray[i - 1].x, coorArray[i - 1].y, 0.0f), // bottom (i-1) left (0)
-		//		vector3(coorArray[i].x, coorArray[i].y, 0.0f), // bottom right
-		//		vector3(coorArray[i - 1].x, coorArray[i - 1].y, a_fHeight), // top left
-		//		vector3(coorArray[i].x, coorArray[i].y, a_fHeight)); // top (i) right (a_fHeight)
-
-		//															 // Bottom Wall
-		//	AddQuad(
-		//		vector3(coorArray[i - 1].x, coorArray[i - 1].y, 0.0f), // bottom (i-1) left (0)
-		//		vector3(coorArray[i].x, coorArray[i].y, 0.0f), // bottom right
-		//		vector3(coorArray[i - 1].x, coorArray[i - 1].y, a_fHeight), // top left
-		//		vector3(coorArray[i].x, coorArray[i].y, a_fHeight)); // top (i) right (a_fHeight)
-
-		//															 // Side Wall
-		//	AddQuad(
-		//		vector3(coorArray[i - 1].x, coorArray[i - 1].y, 0.0f), // bottom (i-1) left (0)
-		//		vector3(coorArray[i].x, coorArray[i].y, 0.0f), // bottom right
-		//		vector3(coorArray[i - 1].x, coorArray[i - 1].y, a_fHeight), // top left
-		//		vector3(coorArray[i].x, coorArray[i].y, a_fHeight)); // top (i) right (a_fHeight)
-		//}
-
-		currentInnerX = newInnerX;
-		currentOuterX = newOuterX;
-		currentInnerY = newInnerY;
-		currentOuterY = newOuterY;
-
-		currentAngle += step; // next angle
-	}
-	
 	// -------------------------------
 
 	// Adding information about color
