@@ -429,7 +429,76 @@ void MyMesh::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float a_fH
 
 	// Replace this with your code
 	// GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
+
+	vector3 tubeHeight(0, 0, a_fHeight); // COOR: Height of the tube
 	
+	std::vector<vector3> coorArray; // Point Coordinates Array
+
+	float tubeRadius = a_fOuterRadius - a_fInnerRadius;
+	float currentX = a_fOuterRadius; // radius is current x + radius x=0
+	float currentY = 0; // radius is current y y=0
+	float step = ((float)TWOPI / a_nSubdivisions); // Define Angle based on subdivisions
+	float currentAngle = step; // store angle
+
+	for (int i = 0; i <= a_nSubdivisions; i++) {
+
+		float newX = (float)cos(currentAngle); // cosine of angle
+		float newY = (float)sin(currentAngle); // sin of angle
+
+		newX = newX * a_fOuterRadius;
+		newY = newY * a_fOuterRadius;
+
+		vector3 currentPoint = vector3(currentX, currentY, 0); // generate x y z coord
+
+		coorArray.push_back(currentPoint); // push back x y z coord into array
+
+		// DRAW SHAPE
+		if (i != 0) {
+
+			// Bottom Base
+			AddQuad(
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y, 0.0f), // bottom (i-1) left (0)
+				vector3(coorArray[i].x, coorArray[i].y, 0.0f), // bottom right
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y - tubeRadius, 0.0f), // top left
+				vector3(coorArray[i].x, coorArray[i].y - tubeRadius, 0.0f)); // top (i) right (a_fHeight)
+			AddQuad(
+				vector3(coorArray[i].x, coorArray[i].y, 0.0f), // bottom (i-1) left (0)
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y, 0.0f), // bottom right
+				vector3(coorArray[i].x, coorArray[i].y - tubeRadius, 0.0f), // top left
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y - tubeRadius, 0.0f)); // top (i) right (a_fHeight)
+
+			// Top Base
+			AddQuad(
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y, a_fHeight), // bottom (i-1) left (0)
+				vector3(coorArray[i].x, coorArray[i].y, a_fHeight), // bottom right
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y - tubeRadius, a_fHeight), // top left
+				vector3(coorArray[i].x, coorArray[i].y - tubeRadius, a_fHeight)); // top (i) right (a_fHeight)
+			AddQuad(
+				vector3(coorArray[i].x, coorArray[i].y, a_fHeight), // bottom (i-1) left (0)
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y, a_fHeight), // bottom right
+				vector3(coorArray[i].x, coorArray[i].y - tubeRadius, a_fHeight), // top left
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y - tubeRadius, a_fHeight)); // top (i) right (a_fHeight)
+
+			// Outer Wall
+			AddQuad(
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y, 0.0f), // bottom (i-1) left (0)
+				vector3(coorArray[i].x, coorArray[i].y, 0.0f), // bottom right
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y, a_fHeight), // top left
+				vector3(coorArray[i].x, coorArray[i].y, a_fHeight)); // top (i) right (a_fHeight)
+
+			// Inner Wall
+			AddQuad(
+				vector3(coorArray[i].x, coorArray[i].y - tubeRadius, 0.0f), // bottom (i-1) left (0)
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y - tubeRadius, 0.0f), // bottom right
+				vector3(coorArray[i].x, coorArray[i].y - tubeRadius, a_fHeight), // top left
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y - tubeRadius, a_fHeight)); // top (i) right (a_fHeight)
+		}
+
+		currentX = newX;
+		currentY = newY;
+
+		currentAngle += step; // next angle
+	}
 
 
 	// -------------------------------
