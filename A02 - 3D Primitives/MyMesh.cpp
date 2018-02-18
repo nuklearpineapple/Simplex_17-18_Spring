@@ -534,13 +534,15 @@ void MyMesh::GenerateTorus(float a_fOuterRadius, float a_fInnerRadius, int a_nSu
 	// Replace this with your code
 	// GenerateCube(a_fOuterRadius * 2.0f, a_v3Color);
 
-	vector3 cylCenter(0, 0, 0); // COOR: Center of the base 
-	
+
+	vector3 tubeHeight(0, 0, 1.0f); // COOR: Height of the tube
+
 	std::vector<vector3> coorArray; // Point Coordinates Array
 
+	float tubeRadius = a_fOuterRadius - a_fInnerRadius;
 	float currentX = a_fOuterRadius; // radius is current x + radius x=0
 	float currentY = 0; // radius is current y y=0
-	float step = (TWOPI / a_nSubdivisionsA); // Define Angle based on subdivisions
+	float step = ((float)TWOPI / a_nSubdivisionsA); // Define Angle based on subdivisions
 	float currentAngle = step; // store angle
 
 	for (int i = 0; i <= a_nSubdivisionsA; i++) {
@@ -555,13 +557,46 @@ void MyMesh::GenerateTorus(float a_fOuterRadius, float a_fInnerRadius, int a_nSu
 
 		coorArray.push_back(currentPoint); // push back x y z coord into array
 
-										   // ADD TRIANGLES TO DRAW SHAPE
+										   // DRAW SHAPE
 		if (i != 0) {
 
 			// Bottom Base
-			AddTri(coorArray[i], coorArray[i - 1], cylCenter);
-			AddTri(coorArray[i - 1], coorArray[i], cylCenter);
+			AddQuad(
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y, 0.0f), // bottom (i-1) left (0)
+				vector3(coorArray[i].x, coorArray[i].y, 0.0f), // bottom right
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y - tubeRadius, 0.0f), // top left
+				vector3(coorArray[i].x, coorArray[i].y - tubeRadius, 0.0f)); // top (i) right (1.0f)
+			AddQuad(
+				vector3(coorArray[i].x, coorArray[i].y, 0.0f), // bottom (i-1) left (0)
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y, 0.0f), // bottom right
+				vector3(coorArray[i].x, coorArray[i].y - tubeRadius, 0.0f), // top left
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y - tubeRadius, 0.0f)); // top (i) right (1.0f)
 
+																					 // Top Base
+			AddQuad(
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y, 1.0f), // bottom (i-1) left (0)
+				vector3(coorArray[i].x, coorArray[i].y, 1.0f), // bottom right
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y - tubeRadius, 1.0f), // top left
+				vector3(coorArray[i].x, coorArray[i].y - tubeRadius, 1.0f)); // top (i) right (1.0f)
+			AddQuad(
+				vector3(coorArray[i].x, coorArray[i].y, 1.0f), // bottom (i-1) left (0)
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y, 1.0f), // bottom right
+				vector3(coorArray[i].x, coorArray[i].y - tubeRadius, 1.0f), // top left
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y - tubeRadius, 1.0f)); // top (i) right (1.0f)
+
+																						  // Outer Wall
+			AddQuad(
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y, 0.0f), // bottom (i-1) left (0)
+				vector3(coorArray[i].x, coorArray[i].y, 0.0f), // bottom right
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y, 1.0f), // top left
+				vector3(coorArray[i].x, coorArray[i].y, 1.0f)); // top (i) right (1.0f)
+
+																	 // Inner Wall
+			AddQuad(
+				vector3(coorArray[i].x, coorArray[i].y - tubeRadius, 0.0f), // bottom (i-1) left (0)
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y - tubeRadius, 0.0f), // bottom right
+				vector3(coorArray[i].x, coorArray[i].y - tubeRadius, 1.0f), // top left
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y - tubeRadius, 1.0f)); // top (i) right (1.0f)
 		}
 
 		currentX = newX;
@@ -595,14 +630,15 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 
 	// Replace this with your code
 	// GenerateCube(a_fRadius * 2.0f, a_v3Color);
-	
-	vector3 cylCenter(0, 0, 0); // COOR: Center of the base 
+
+	vector3 bottomSphere(0, 0, a_fRadius - (2*a_fRadius)); // COOR: bottom of the sphere
+	vector3 topSphere(0, 0, a_fRadius + a_fRadius); // COOR: top of the sphere
 
 	std::vector<vector3> coorArray; // Point Coordinates Array
 
 	float currentX = a_fRadius; // radius is current x + radius x=0
 	float currentY = 0; // radius is current y y=0
-	float step = (TWOPI / a_nSubdivisions); // Define Angle based on subdivisions
+	float step = ((float)TWOPI / a_nSubdivisions); // Define Angle based on subdivisions
 	float currentAngle = step; // store angle
 
 	for (int i = 0; i <= a_nSubdivisions; i++) {
@@ -617,13 +653,30 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 
 		coorArray.push_back(currentPoint); // push back x y z coord into array
 
-										   // ADD TRIANGLES TO DRAW SHAPE
+										   // DRAW SHAPE
 		if (i != 0) {
 
 			// Bottom Base
-			AddTri(coorArray[i], coorArray[i - 1], cylCenter);
-			AddTri(coorArray[i - 1], coorArray[i], cylCenter);
-			
+			AddTri(coorArray[i], coorArray[i - 1], bottomSphere);
+			AddTri(coorArray[i - 1], coorArray[i], bottomSphere);
+
+			// Top Base
+			AddTri(
+				vector3(coorArray[i].x, coorArray[i].y, a_fRadius),
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y, a_fRadius),
+				topSphere);
+			AddTri(
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y, a_fRadius),
+				vector3(coorArray[i].x, coorArray[i].y, a_fRadius),
+				topSphere);
+
+			// Middle
+			AddQuad(
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y, 0.0f), // bottom (i-1) left (0)
+				vector3(coorArray[i].x, coorArray[i].y, 0.0f), // bottom right
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y, a_fRadius), // top left
+				vector3(coorArray[i].x, coorArray[i].y, a_fRadius)); // top (i) right (a_fHeight)
+
 		}
 
 		currentX = newX;
@@ -631,7 +684,7 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 
 		currentAngle += step; // next angle
 	}
-	
+
 	// -------------------------------
 
 	// Adding information about color
