@@ -486,12 +486,24 @@ void MyMesh::GenerateTube(float a_fOuterRadius, float a_fInnerRadius, float a_fH
 				vector3(coorArray[i - 1].x, coorArray[i - 1].y, a_fHeight), // top left
 				vector3(coorArray[i].x, coorArray[i].y, a_fHeight)); // top (i) right (a_fHeight)
 
+			AddQuad(
+				vector3(coorArray[i].x, coorArray[i].y, 0.0f), // bottom (i-1) left (0)
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y, 0.0f), // bottom right
+				vector3(coorArray[i].x, coorArray[i].y, a_fHeight), // top left
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y, a_fHeight)); // top (i) right (a_fHeight)
+
 			// Inner Wall
 			AddQuad(
 				vector3(coorArray[i].x, coorArray[i].y - tubeRadius, 0.0f), // bottom (i-1) left (0)
 				vector3(coorArray[i - 1].x, coorArray[i - 1].y - tubeRadius, 0.0f), // bottom right
 				vector3(coorArray[i].x, coorArray[i].y - tubeRadius, a_fHeight), // top left
 				vector3(coorArray[i - 1].x, coorArray[i - 1].y - tubeRadius, a_fHeight)); // top (i) right (a_fHeight)
+
+			AddQuad(
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y - tubeRadius, 0.0f), // bottom (i-1) left (0)
+				vector3(coorArray[i].x, coorArray[i].y - tubeRadius, 0.0f), // bottom right
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y - tubeRadius, a_fHeight), // top left
+				vector3(coorArray[i].x, coorArray[i].y - tubeRadius, a_fHeight)); // top (i) right (a_fHeight)
 		}
 
 		currentX = newX;
@@ -565,38 +577,50 @@ void MyMesh::GenerateTorus(float a_fOuterRadius, float a_fInnerRadius, int a_nSu
 				vector3(coorArray[i - 1].x, coorArray[i - 1].y, 0.0f), // bottom (i-1) left (0)
 				vector3(coorArray[i].x, coorArray[i].y, 0.0f), // bottom right
 				vector3(coorArray[i - 1].x, coorArray[i - 1].y - tubeRadius, 0.0f), // top left
-				vector3(coorArray[i].x, coorArray[i].y - tubeRadius, 0.0f)); // top (i) right (1.0f)
+				vector3(coorArray[i].x, coorArray[i].y - tubeRadius, 0.0f)); // top (i) right (a_fHeight)
 			AddQuad(
 				vector3(coorArray[i].x, coorArray[i].y, 0.0f), // bottom (i-1) left (0)
 				vector3(coorArray[i - 1].x, coorArray[i - 1].y, 0.0f), // bottom right
 				vector3(coorArray[i].x, coorArray[i].y - tubeRadius, 0.0f), // top left
-				vector3(coorArray[i - 1].x, coorArray[i - 1].y - tubeRadius, 0.0f)); // top (i) right (1.0f)
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y - tubeRadius, 0.0f)); // top (i) right (a_fHeight)
 
-																					 // Top Base
+			// Top Base
 			AddQuad(
-				vector3(coorArray[i - 1].x, coorArray[i - 1].y, 1.0f), // bottom (i-1) left (0)
-				vector3(coorArray[i].x, coorArray[i].y, 1.0f), // bottom right
-				vector3(coorArray[i - 1].x, coorArray[i - 1].y - tubeRadius, 1.0f), // top left
-				vector3(coorArray[i].x, coorArray[i].y - tubeRadius, 1.0f)); // top (i) right (1.0f)
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y, a_fInnerRadius), // bottom (i-1) left (0)
+				vector3(coorArray[i].x, coorArray[i].y, a_fInnerRadius), // bottom right
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y - tubeRadius, a_fInnerRadius), // top left
+				vector3(coorArray[i].x, coorArray[i].y - tubeRadius, a_fInnerRadius)); // top (i) right (a_fHeight)
 			AddQuad(
-				vector3(coorArray[i].x, coorArray[i].y, 1.0f), // bottom (i-1) left (0)
-				vector3(coorArray[i - 1].x, coorArray[i - 1].y, 1.0f), // bottom right
-				vector3(coorArray[i].x, coorArray[i].y - tubeRadius, 1.0f), // top left
-				vector3(coorArray[i - 1].x, coorArray[i - 1].y - tubeRadius, 1.0f)); // top (i) right (1.0f)
+				vector3(coorArray[i].x, coorArray[i].y, a_fInnerRadius), // bottom (i-1) left (0)
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y, a_fInnerRadius), // bottom right
+				vector3(coorArray[i].x, coorArray[i].y - tubeRadius, a_fInnerRadius), // top left
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y - tubeRadius, a_fInnerRadius)); // top (i) right (a_fHeight)
 
-																						  // Outer Wall
+			// Outer Wall
 			AddQuad(
 				vector3(coorArray[i - 1].x, coorArray[i - 1].y, 0.0f), // bottom (i-1) left (0)
 				vector3(coorArray[i].x, coorArray[i].y, 0.0f), // bottom right
-				vector3(coorArray[i - 1].x, coorArray[i - 1].y, 1.0f), // top left
-				vector3(coorArray[i].x, coorArray[i].y, 1.0f)); // top (i) right (1.0f)
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y, a_fInnerRadius), // top left
+				vector3(coorArray[i].x, coorArray[i].y, a_fInnerRadius)); // top (i) right (a_fHeight)
 
-																	 // Inner Wall
+			AddQuad(
+				vector3(coorArray[i].x, coorArray[i].y, 0.0f), // bottom (i-1) left (0)
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y, 0.0f), // bottom right
+				vector3(coorArray[i].x, coorArray[i].y, a_fInnerRadius), // top left
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y, a_fInnerRadius)); // top (i) right (a_fHeight)
+
+			// Inner Wall
 			AddQuad(
 				vector3(coorArray[i].x, coorArray[i].y - tubeRadius, 0.0f), // bottom (i-1) left (0)
 				vector3(coorArray[i - 1].x, coorArray[i - 1].y - tubeRadius, 0.0f), // bottom right
-				vector3(coorArray[i].x, coorArray[i].y - tubeRadius, 1.0f), // top left
-				vector3(coorArray[i - 1].x, coorArray[i - 1].y - tubeRadius, 1.0f)); // top (i) right (1.0f)
+				vector3(coorArray[i].x, coorArray[i].y - tubeRadius, a_fInnerRadius), // top left
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y - tubeRadius, a_fInnerRadius)); // top (i) right (a_fHeight)
+
+			AddQuad(
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y - tubeRadius, 0.0f), // bottom (i-1) left (0)
+				vector3(coorArray[i].x, coorArray[i].y - tubeRadius, 0.0f), // bottom right
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y - tubeRadius, a_fInnerRadius), // top left
+				vector3(coorArray[i].x, coorArray[i].y - tubeRadius, a_fInnerRadius)); // top (i) right (a_fHeight)
 		}
 
 		currentX = newX;
@@ -681,13 +705,21 @@ void MyMesh::GenerateSphere(float a_fRadius, int a_nSubdivisions, vector3 a_v3Co
 
 			// Build sphere with latitude and logitude coordinate plotting
 
-			AddVertexPosition(
-				vector3(
-					((float)sin(PI*coorArray[i - 1].x)) * ((float)cos(TWOPI * coorArray[i - 1].z)),
-					((float)sin(PI*coorArray[i - 1].x)) * ((float)sin(TWOPI * coorArray[i - 1].z)),
-					((float)cos(PI * coorArray[i - 1].x))
-				)
-			);
+			// Outer Wall
+			AddQuad(
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y, 0.0f), // bottom (i-1) left (0)
+				vector3(coorArray[i].x, coorArray[i].y, 0.0f), // bottom right
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y, a_fRadius), // top left
+				vector3(coorArray[i].x, coorArray[i].y, a_fRadius) // top (i) right (a_fHeight)
+			); 
+
+																	 // Inner Wall
+			AddQuad(
+				vector3(coorArray[i].x, coorArray[i].y, 0.0f), // bottom (i-1) left (0)
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y, 0.0f), // bottom right
+				vector3(coorArray[i].x, coorArray[i].y, a_fRadius), // top left
+				vector3(coorArray[i - 1].x, coorArray[i - 1].y, a_fRadius) // top (i) right (a_fHeight)
+			); 
 
 			// Middle
 			//AddQuad(
