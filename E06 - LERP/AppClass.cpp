@@ -56,12 +56,7 @@ void Application::Display(void)
 
 
 	//your code goes here
-
-	// y = y0 + ( y1 - y0 ) (x - x0) / (x1 - x0)
-
-	// (start + percent*(end - start));
-
-
+	
 	static int positionCount = 0; // retains current point in array (starting point)
 
 	float endTime = 2.0f; // amount of time spent traveling
@@ -74,10 +69,11 @@ void Application::Display(void)
 
 	static float currentX = m_stopsList[0].x;
 	
-	float y = startCoord.y + ( endCoord.y - startCoord.y ) * (currentX - startCoord.x) / (endCoord.x - startCoord.x); // time = current time over time to reach target
+	//float y = startCoord.y + ( endCoord.y - startCoord.y ) * (currentX - startCoord.x) / (endCoord.x - startCoord.x); // time = current time over time to reach target
 
 	vector3 time = vector3( fTimer / endTime, fTimer / endTime, fTimer / endTime); // time percent
 
+	// Linear Interpolation Formula (start + percent*(end - start));
 	v3CurrentPos = vector3( startCoord + time * (endCoord-startCoord) ); // move
 	
 	if (fTimer >= 2) {
