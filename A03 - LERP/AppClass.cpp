@@ -67,8 +67,9 @@ void Application::Display(void)
 	// draw a shapes
 	for (uint i = 0; i < m_uOrbits; ++i)
 	{
+		// draw orbits
 		m_pMeshMngr->AddMeshToRenderList(m_shapeList[i], glm::rotate(m4Offset, 90.0f, AXIS_X));
-
+		
 		//calculate the current position
 		vector3 v3CurrentPos = ZERO_V3;
 		matrix4 m4Model = glm::translate(m4Offset, v3CurrentPos);
