@@ -62,7 +62,12 @@ void Application::Display(void)
 	float endTime = 2.0f; // amount of time spent traveling
 
 	int startPoint = positionCount; // current point in array (starting point)
-	int endPoint = positionCount + 1; // the following point in array (goal | end point)
+	int endPoint;
+
+	if (positionCount < m_stopsList.size() - 1)
+		endPoint = positionCount + 1; // the following point in array (goal | end point)
+	else
+		endPoint = 0;
 
 	vector3 startCoord = m_stopsList[startPoint]; // starting coordinates for lerp
 	vector3 endCoord = m_stopsList[endPoint]; // goal and/or ending coordinates for lerp
@@ -77,11 +82,13 @@ void Application::Display(void)
 	v3CurrentPos = vector3( startCoord + time * (endCoord-startCoord) ); // move
 	
 	if (fTimer >= 2) {
-		positionCount++;
+		if(positionCount < m_stopsList.size())
+			positionCount++;
+		
 		fTimer = 0;
 	}
 
-	if (positionCount >= m_stopsList.size() - 1) {
+	if (positionCount >= m_stopsList.size()) {
 		positionCount = 0;
 	}
 
