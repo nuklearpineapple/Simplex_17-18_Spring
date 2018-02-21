@@ -2,7 +2,7 @@
 void Application::InitVariables(void)
 {
 	//Change this to your name and email
-	m_sProgrammer = "Alberto Bobadilla - labigm@rit.edu";
+	m_sProgrammer = "Tim Ascencio - ta3755@g.rit.edu";
 
 	//Set the position and target of the camera
 	m_pCameraMngr->SetPositionTargetAndUp(vector3(5.0f,3.0f,15.0f), ZERO_V3, AXIS_Y);
@@ -53,23 +53,50 @@ void Application::Display(void)
 
 	//calculate the current position
 	vector3 v3CurrentPos;
-	
-
-
 
 
 	//your code goes here
-	v3CurrentPos = vector3(0.0f, 0.0f, 0.0f);
+
+	// y = y0 + ( y1 - y0 ) (x - x0) / (x1 - x0)
+
+	// (start + percent*(end - start));
+
+
+	static int positionCount = 0; // retains current point in array (starting point)
+
+	float endTime = 2.0f; // amount of time spent traveling
+
+	int startPoint = positionCount; // current point in array (starting point)
+	int endPoint = positionCount + 1; // the following point in array (goal | end point)
+
+	vector3 startCoord = m_stopsList[startPoint]; // starting coordinates for lerp
+	vector3 endCoord = m_stopsList[endPoint]; // goal and/or ending coordinates for lerp
+
+	static float currentX = m_stopsList[0].x;
+	
+	float y = startCoord.y + ( endCoord.y - startCoord.y ) * (currentX - startCoord.x) / (endCoord.x - startCoord.x); // time = current time over time to reach target
+
+	vector3 time = vector3( fTimer / endTime, fTimer / endTime, fTimer / endTime); // time percent
+
+	v3CurrentPos = vector3( startCoord + time * (endCoord-startCoord) ); // move
+	
+	if (fTimer >= 2) {
+		positionCount++;
+		fTimer = 0;
+	}
+
+	if (positionCount >= m_stopsList.size() - 1) {
+		positionCount = 0;
+	}
+
 	//-------------------
 	
 
-
-	
 	matrix4 m4Model = glm::translate(v3CurrentPos);
 	m_pModel->SetModelMatrix(m4Model);
 
 	m_pMeshMngr->Print("\nTimer: ");//Add a line on top
-	m_pMeshMngr->PrintLine(std::to_string(fTimer), C_YELLOW);
+	m_pMeshMngr->PrintLine(std::to_string(fTimer), C_YELLOW); // yield a GUI for time passing in seconds
 
 	// Draw stops
 	for (uint i = 0; i < m_stopsList.size(); ++i)
