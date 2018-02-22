@@ -30,7 +30,7 @@ void Application::Display(void)
 	m_m4Model = glm::rotate(m_m4Model, m_v3Rotation.y, vector3(0.0f, 1.0f, 0.0f));
 	m_m4Model = glm::rotate(m_m4Model, m_v3Rotation.z, vector3(0.0f, 0.0f, 1.0f));
 
-	// orientation -_-
+	// orientation
 	m_qOrientation = m_qOrientation * glm::angleAxis(1.0f, vector3(1.0f));
 	
 	m_pMesh->Render(m4Projection, m4View, ToMatrix4(m_qOrientation));
