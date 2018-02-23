@@ -25,13 +25,9 @@ void Application::Display(void)
 	matrix4 m4View = m_pCameraMngr->GetViewMatrix();
 	matrix4 m4Projection = m_pCameraMngr->GetProjectionMatrix();
 
-	
-	m_m4Model = glm::rotate(IDENTITY_M4, m_v3Rotation.x, vector3(1.0f, 0.0f, 0.0f));
-	m_m4Model = glm::rotate(m_m4Model, m_v3Rotation.y, vector3(0.0f, 1.0f, 0.0f));
-	m_m4Model = glm::rotate(m_m4Model, m_v3Rotation.z, vector3(0.0f, 0.0f, 1.0f));
-
-	// orientation
-	m_qOrientation = m_qOrientation * glm::angleAxis(1.0f, vector3(1.0f));
+	// orientation constant rotation - over time skew effect occurs due to trying to map 4D in 3D space
+	// quaternion quat = glm::angleAxis(1.0f, vector3(1.0f, 1.0f, 1.0f));
+	// m_qOrientation = m_qOrientation * quat;
 	
 	m_pMesh->Render(m4Projection, m4View, ToMatrix4(m_qOrientation));
 	

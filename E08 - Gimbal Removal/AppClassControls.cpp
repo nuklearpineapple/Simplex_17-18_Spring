@@ -73,6 +73,7 @@ void Application::ProcessKeyPressed(sf::Event a_event)
 	case sf::Keyboard::Space:
 		break;
 	}
+
 	//gui
 	gui.io.KeysDown[a_event.key.code] = true;
 	gui.io.KeyCtrl = a_event.key.control;
@@ -389,12 +390,12 @@ void Application::ProcessKeyboard(void)
 	for discreet on/off use ProcessKeyboardPressed/Released
 	*/
 #pragma region Camera Position
-	float fSpeed = 1.0f;
+	float fSpeed = 2.0f;
 	float fMultiplier = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) ||
 		sf::Keyboard::isKeyPressed(sf::Keyboard::RShift);
 
 	if (fMultiplier)
-		fSpeed *= 5.0f;
+		fSpeed *= 3.0f;
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 		m_pCameraMngr->MoveForward(fSpeed);
@@ -416,28 +417,32 @@ void Application::ProcessKeyboard(void)
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::X))
 	{
-		if (fMultiplier)
-			m_v3Rotation.x -= 1.0f;
-		else
-			m_v3Rotation.x += 1.0f;
+		// remove gimbal lock with matrix multiplication
+		quaternion quat = glm::angleAxis(fSpeed, vector3(1.0f, 0.0f, 0.0f));
+		m_qOrientation = m_qOrientation * quat;
 	}
+
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Y))
 	{
-		if (fMultiplier)
-			m_v3Rotation.y -= 1.0f;
-		else
-			m_v3Rotation.y += 1.0f;
+		// remove gimbal lock with matrix multiplication
+		quaternion quat = glm::angleAxis(fSpeed, vector3(0.0f, 1.0f, 0.0f));
+		m_qOrientation = m_qOrientation * quat;
 	}
+
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
 	{
-		if (fMultiplier)
-			m_v3Rotation.z -= 1.0f;
-		else
-			m_v3Rotation.z += 1.0f;
+		// remove gimbal lock with matrix multiplication
+		quaternion quat = glm::angleAxis(fSpeed, vector3(0.0f, 0.0f, 1.0f));
+		m_qOrientation = m_qOrientation * quat;
 	}
+
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
 	{
-		m_v3Rotation = vector3(0.0f);
+		/* Bad code breaks orientation of object
+		m_qOrientation.x = m_qOrientation.x = 0.0f;
+		m_qOrientation.x = m_qOrientation.y = 0.0f;
+		m_qOrientation.x = m_qOrientation.z = 0.0f;
+		*/
 	}
 #pragma endregion
 }
