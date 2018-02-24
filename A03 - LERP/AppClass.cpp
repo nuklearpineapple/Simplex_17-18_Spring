@@ -23,6 +23,7 @@ void Application::InitVariables(void)
 		m_uOrbits = 7;
 
 	float fSize = 1.0f; //initial size of orbits
+	// fRadius;
 
 	//creating a color using the spectrum 
 	uint uColor = 650; //650 is Red
@@ -38,6 +39,25 @@ void Application::InitVariables(void)
 		m_shapeList.push_back(m_pMeshMngr->GenerateTorus(fSize, fSize - 0.1f, 3, i, v3Color)); //generate a custom torus and add it to the meshmanager
 		fSize += 0.5f; //increment the size for the next orbit
 		uColor -= static_cast<uint>(decrements); //decrease the wavelength
+
+		/////////////////////////////////////////////////////////////////////////////////////
+
+		static float currentX = fSize; // fSize = orbit radius
+		static float currentY = 0;
+
+		float step = ((float)TWOPI / i); // angle formula 2Pi divided by i = orbit subdivisions
+		float currentAngle = step;
+
+		float newX = (float)cos(currentAngle); // cosine of angle
+		float newY = (float)sin(currentAngle); // sin of angle
+
+		newX = newX * fSize;
+		newY = newY * fSize;
+
+		vector3 currentPoint = vector3(currentX, currentY, 0); // generate x y z coord
+		stops_list.push_back(currentPoint); // push back x y z coord into array
+
+		/////////////////////////////////////////////////////////////////////////////////////
 	}
 }
 void Application::Update(void)
@@ -69,12 +89,36 @@ void Application::Display(void)
 	{
 		// draw orbits
 		m_pMeshMngr->AddMeshToRenderList(m_shapeList[i], glm::rotate(m4Offset, 90.0f, AXIS_X));
-		
-		//calculate the current position
-		vector3 v3CurrentPos = ZERO_V3;
-		matrix4 m4Model = glm::translate(m4Offset, v3CurrentPos);
 
-		//draw spheres
+		////////////////////////////////////////////////
+
+		static uint positionCount = 0; // retains current point in array (starting point)
+
+		uint startPoint = positionCount; // current point in array (starting point)
+		uint endPoint;
+
+		if (positionCount < stops_list.size() - 1)
+			endPoint = positionCount + 1; // the following point in array (goal | end point)
+		else
+			endPoint = 0;
+
+		vector3 startCoord = stops_list[startPoint]; // starting coordinates for lerp
+		vector3 endCoord = stops_list[endPoint]; // goal and/or ending coordinates for lerp
+
+		vector3 time = vector3(1.0f); // time percent - manipulate speed of object
+
+		if (positionCount >= stops_list.size()) {
+			positionCount = 0;
+		}
+
+		// calculate the current position
+		vector3 v3CurrentPos = vector3(startCoord + time * (endCoord - startCoord)); // push movement into array
+
+		////////////////////////////////////////////////
+
+		matrix4 m4Model = glm::translate(m4Offset, v3CurrentPos);
+		
+		// draw spheres
 		m_pMeshMngr->AddSphereToRenderList(m4Model * glm::scale(vector3(0.1)), C_WHITE);
 	}
 

@@ -307,9 +307,11 @@ void MyMesh::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivisions,
 
 		// ADD TRIANGLES TO DRAW SHAPE
 		if (i != 0) {
+			// Base
 			AddTri(coorArray[i], coorArray[i - 1], coneCenter);
 			AddTri(coorArray[i - 1], coorArray[i], coneCenter);
 
+			// Height
 			AddTri(coorArray[i], coorArray[i - 1], coneHeight);
 			AddTri(coorArray[i - 1], coorArray[i], coneHeight);
 		}
