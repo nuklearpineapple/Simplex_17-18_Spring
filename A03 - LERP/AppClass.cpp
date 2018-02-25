@@ -41,6 +41,7 @@ void Application::InitVariables(void)
 		uColor -= static_cast<uint>(decrements); //decrease the wavelength
 
 		/////////////////////////////////////////////////////////////////////////////////////
+		#pragma region Calculate Orbit Stops
 
 		static float currentX = fSize; // fSize = orbit radius
 		static float currentY = 0;
@@ -48,15 +49,29 @@ void Application::InitVariables(void)
 		float step = ((float)TWOPI / i); // angle formula 2Pi divided by i = orbit subdivisions
 		float currentAngle = step;
 
-		float newX = (float)cos(currentAngle); // cosine of angle
-		float newY = (float)sin(currentAngle); // sin of angle
+		std::vector<vector3> currentOrbitList; // array containing a set of coordinates for a specific orbit
+		
+		// Within the current orbit being generated, prepare to fill vector<vector<vector3>> stops_list
+		for (int j = 0; j < i; j++) {
 
-		newX = newX * fSize;
-		newY = newY * fSize;
+			float newX = (float)cos(currentAngle); // cosine of angle
+			float newY = (float)sin(currentAngle); // sin of angle
 
-		vector3 currentPoint = vector3(currentX, currentY, 0); // generate x y z coord
-		stops_list.push_back(currentPoint); // push back x y z coord into array
+			newX = newX * fSize;
+			newY = newY * fSize;
 
+			vector3 currentPoint = vector3(currentX, currentY, 0); // generate x y z coord
+			currentOrbitList.push_back(currentPoint); // push back x y z coord into array
+
+			currentX = newX;
+			currentY = newY;
+
+			currentAngle += step;
+		}
+
+		stops_list.push_back(currentOrbitList); // array containing arrays of coordinates for different orbits
+
+		#pragma endregion 
 		/////////////////////////////////////////////////////////////////////////////////////
 	}
 }
@@ -84,42 +99,43 @@ void Application::Display(void)
 	*/
 	//m4Offset = glm::rotate(IDENTITY_M4, 90.0f, AXIS_Z);
 
+	// initialize route to zero for each display call
+	uint route = 0; //current route
+
 	// draw a shapes
 	for (uint i = 0; i < m_uOrbits; ++i)
 	{
-		// draw orbits
 		m_pMeshMngr->AddMeshToRenderList(m_shapeList[i], glm::rotate(m4Offset, 90.0f, AXIS_X));
+		/////////////////////////////////////////////////////////////////////////////////////
+		#pragma region LERP
 
-		////////////////////////////////////////////////
+		vector3 v3Start; //start point
+		vector3 v3End; //end point
+		v3Start = stops_list[i][route]; //start at the current route
+		v3End = stops_list[i][(route + 1) % stops_list.size()]; //end at route +1 (if overboard will restart from 0)
 
-		static uint positionCount = 0; // retains current point in array (starting point)
+		//get the percentage
+		float fTimeBetweenStops = 2.0; //in seconds
 
-		uint startPoint = positionCount; // current point in array (starting point)
-		uint endPoint;
+		//map the value to be between 0.0 and 1.0
+		float fPercentage = MapValue(2.0f, 0.0f, fTimeBetweenStops, 0.0f, 1.0f);
 
-		if (positionCount < stops_list.size() - 1)
-			endPoint = positionCount + 1; // the following point in array (goal | end point)
-		else
-			endPoint = 0;
-
-		vector3 startCoord = stops_list[startPoint]; // starting coordinates for lerp
-		vector3 endCoord = stops_list[endPoint]; // goal and/or ending coordinates for lerp
-
-		vector3 time = vector3(1.0f); // time percent - manipulate speed of object
-
-		if (positionCount >= stops_list.size()) {
-			positionCount = 0;
-		}
-
-		// calculate the current position
-		vector3 v3CurrentPos = vector3(startCoord + time * (endCoord - startCoord)); // push movement into array
-
-		////////////////////////////////////////////////
+		//calculate the current position
+		vector3 v3CurrentPos = glm::lerp(v3Start, v3End, fPercentage);
 
 		matrix4 m4Model = glm::translate(m4Offset, v3CurrentPos);
 		
-		// draw spheres
 		m_pMeshMngr->AddSphereToRenderList(m4Model * glm::scale(vector3(0.1)), C_WHITE);
+
+		//if we are done with this route
+		if (fPercentage >= 1.0f)
+		{
+			route++; //go to the next route
+			route %= stops_list[i].size();//make sure we are within boundaries
+		}
+
+		#pragma endregion 
+		/////////////////////////////////////////////////////////////////////////////////////
 	}
 
 	//render list call
