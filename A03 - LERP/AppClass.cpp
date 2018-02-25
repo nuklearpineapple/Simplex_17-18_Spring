@@ -120,7 +120,7 @@ void Application::Display(void)
 		v3End = stops_list[i][(route + 1) % stops_list[i].size()]; //end at route +1 (if overboard will restart from 0)
 
 		//get the percentage
-		float fTimeBetweenStops = 0.2f; //in seconds
+		float fTimeBetweenStops = 1.0f; //in seconds
 
 		//map the value to be between 0.0 and 1.0
 		float fPercentage = MapValue(fTimer, 0.0f, fTimeBetweenStops, 0.0f, 1.0f);
