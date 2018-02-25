@@ -61,13 +61,13 @@ void Application::InitVariables(void)
 			newX = newX * (fRadius);
 			newY = newY * (fRadius);
 
-			vector3 currentPoint = vector3(currentX, currentY, 0); // generate x y z coord
-			currentOrbitList.push_back(currentPoint); // push back x y z coord into array
-
 			currentX = newX;
 			currentY = newY;
 
 			currentAngle += step;
+
+			vector3 currentPoint = vector3(currentX, currentY, 0); // generate x y z coord
+			currentOrbitList.push_back(currentPoint); // push back x y z coord into array
 		}
 
 		stops_list.push_back(currentOrbitList); // array containing arrays of coordinates for different orbits
@@ -130,7 +130,8 @@ void Application::Display(void)
 
 		matrix4 m4Model = glm::translate(m4Offset, v3CurrentPos);
 
-		m_pMeshMngr->AddSphereToRenderList(m4Model * glm::scale(vector3(0.1)), C_WHITE);
+		// scaled slightly larger so that you can see the spheres if the # of orbits is large
+		m_pMeshMngr->AddSphereToRenderList(m4Model * glm::scale(vector3(0.25)), C_WHITE);
 
 		//if we are done with this route
 		if (fPercentage >= 1.0f)
