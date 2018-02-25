@@ -116,11 +116,11 @@ void Application::Display(void)
 
 		vector3 v3Start; //start point
 		vector3 v3End; //end point
-		v3Start = stops_list[i][route]; //array orbit sub route
+		v3Start = stops_list[i][route % stops_list[i].size()]; // start coordinate in current orbit
 		v3End = stops_list[i][(route + 1) % stops_list[i].size()]; //end at route +1 (if overboard will restart from 0)
 
 		//get the percentage
-		float fTimeBetweenStops = 0.5f; //in seconds
+		float fTimeBetweenStops = 0.2f; //in seconds
 
 		//map the value to be between 0.0 and 1.0
 		float fPercentage = MapValue(fTimer, 0.0f, fTimeBetweenStops, 0.0f, 1.0f);
@@ -136,10 +136,8 @@ void Application::Display(void)
 		if (fPercentage >= 1.0f)
 		{
 			route++; //go to the next route
-			fTimer = m_pSystem->GetDeltaTime(uClock);//restart the clock
-			route %= stops_list[i].size();//make sure we are within boundaries
+			fTimer = m_pSystem->GetDeltaTime(uClock); // restart the clock
 		}
-		
 
 		#pragma endregion 
 		/////////////////////////////////////////////////////////////////////////////////////
