@@ -117,7 +117,7 @@ void Application::Display(void)
 		vector3 v3Start; //start point
 		vector3 v3End; //end point
 		v3Start = stops_list[i][route]; //array orbit sub route
-		v3End = stops_list[i][(route + 1) % stops_list.size()]; //end at route +1 (if overboard will restart from 0)
+		v3End = stops_list[i][(route + 1) % stops_list[i].size()]; //end at route +1 (if overboard will restart from 0)
 
 		//get the percentage
 		float fTimeBetweenStops = 0.5f; //in seconds
