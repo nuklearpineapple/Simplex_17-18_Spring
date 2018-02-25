@@ -104,8 +104,8 @@ void Application::Display(void)
 	*/
 	//m4Offset = glm::rotate(IDENTITY_M4, 90.0f, AXIS_Z);
 
-	// initialize route to zero for each display call
-	uint route = 0; //current route
+	// initialize route to zero
+	static uint route = 0; //current route
 
 	// draw a shapes
 	for (uint i = 0; i < m_uOrbits; ++i)
@@ -114,33 +114,32 @@ void Application::Display(void)
 		/////////////////////////////////////////////////////////////////////////////////////
 		#pragma region LERP
 
-		//for (int j = 0; j < stops_list[i].size(); j++) {
-			vector3 v3Start; //start point
-			vector3 v3End; //end point
-			v3Start = stops_list[i][route]; //start at the current route
-			v3End = stops_list[i][(route + 1) % stops_list.size()]; //end at route +1 (if overboard will restart from 0)
+		vector3 v3Start; //start point
+		vector3 v3End; //end point
+		v3Start = stops_list[i][route]; //array orbit sub route
+		v3End = stops_list[i][(route + 1) % stops_list.size()]; //end at route +1 (if overboard will restart from 0)
 
-			//get the percentage
-			float fTimeBetweenStops = 0.5f; //in seconds
+		//get the percentage
+		float fTimeBetweenStops = 0.5f; //in seconds
 
-			//map the value to be between 0.0 and 1.0
-			float fPercentage = MapValue(fTimer, 0.0f, fTimeBetweenStops, 0.0f, 1.0f);
+		//map the value to be between 0.0 and 1.0
+		float fPercentage = MapValue(fTimer, 0.0f, fTimeBetweenStops, 0.0f, 1.0f);
 
-			//calculate the current position
-			vector3 v3CurrentPos = glm::lerp(v3Start, v3End, fPercentage);
+		//calculate the current position
+		vector3 v3CurrentPos = glm::lerp(v3Start, v3End, fPercentage);
 
-			matrix4 m4Model = glm::translate(m4Offset, v3CurrentPos);
+		matrix4 m4Model = glm::translate(m4Offset, v3CurrentPos);
 
-			m_pMeshMngr->AddSphereToRenderList(m4Model * glm::scale(vector3(0.1)), C_WHITE);
+		m_pMeshMngr->AddSphereToRenderList(m4Model * glm::scale(vector3(0.1)), C_WHITE);
 
-			//if we are done with this route
-			if (fPercentage >= 1.0f)
-			{
-				route++; //go to the next route
-				fTimer = m_pSystem->GetDeltaTime(uClock);//restart the clock
-				route %= stops_list[i].size();//make sure we are within boundaries
-			}
-		//}
+		//if we are done with this route
+		if (fPercentage >= 1.0f)
+		{
+			route++; //go to the next route
+			fTimer = m_pSystem->GetDeltaTime(uClock);//restart the clock
+			route %= stops_list[i].size();//make sure we are within boundaries
+		}
+		
 
 		#pragma endregion 
 		/////////////////////////////////////////////////////////////////////////////////////
