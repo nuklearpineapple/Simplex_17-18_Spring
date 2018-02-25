@@ -23,7 +23,7 @@ void Application::InitVariables(void)
 		m_uOrbits = 7;
 
 	float fSize = 1.0f; //initial size of orbits
-	// fRadius;
+	float fRadius = 1.0f;
 
 	//creating a color using the spectrum 
 	uint uColor = 650; //650 is Red
@@ -35,6 +35,7 @@ void Application::InitVariables(void)
 	uint uSides = 3; //start with the minimal 3 sides
 	for (uint i = uSides; i < m_uOrbits + uSides; i++)
 	{
+		fRadius = fSize;
 		vector3 v3Color = WaveLengthToRGB(uColor); //calculate color based on wavelength
 		m_shapeList.push_back(m_pMeshMngr->GenerateTorus(fSize, fSize - 0.1f, 3, i, v3Color)); //generate a custom torus and add it to the meshmanager
 		fSize += 0.5f; //increment the size for the next orbit
@@ -43,7 +44,7 @@ void Application::InitVariables(void)
 		/////////////////////////////////////////////////////////////////////////////////////
 		#pragma region Calculate Orbit Stops
 
-		static float currentX = fSize; // fSize = orbit radius
+		static float currentX = (fRadius); // fSize is approximately orbit radius
 		static float currentY = 0;
 
 		float step = ((float)TWOPI / i); // angle formula 2Pi divided by i = orbit subdivisions
@@ -57,8 +58,8 @@ void Application::InitVariables(void)
 			float newX = (float)cos(currentAngle); // cosine of angle
 			float newY = (float)sin(currentAngle); // sin of angle
 
-			newX = newX * fSize;
-			newY = newY * fSize;
+			newX = newX * (fRadius);
+			newY = newY * (fRadius);
 
 			vector3 currentPoint = vector3(currentX, currentY, 0); // generate x y z coord
 			currentOrbitList.push_back(currentPoint); // push back x y z coord into array
@@ -91,6 +92,10 @@ void Application::Display(void)
 	// Clear the screen
 	ClearScreen();
 
+	static float fTimer = 0;	//store the new timer
+	static uint uClock = m_pSystem->GenClock(); //generate a new clock for that timer
+	fTimer += m_pSystem->GetDeltaTime(uClock); //get the delta time for that timer
+
 	matrix4 m4View = m_pCameraMngr->GetViewMatrix(); //view Matrix
 	matrix4 m4Projection = m_pCameraMngr->GetProjectionMatrix(); //Projection Matrix
 	matrix4 m4Offset = IDENTITY_M4; //offset of the orbits, starts as the global coordinate system
@@ -109,30 +114,33 @@ void Application::Display(void)
 		/////////////////////////////////////////////////////////////////////////////////////
 		#pragma region LERP
 
-		vector3 v3Start; //start point
-		vector3 v3End; //end point
-		v3Start = stops_list[i][route]; //start at the current route
-		v3End = stops_list[i][(route + 1) % stops_list.size()]; //end at route +1 (if overboard will restart from 0)
+		//for (int j = 0; j < stops_list[i].size(); j++) {
+			vector3 v3Start; //start point
+			vector3 v3End; //end point
+			v3Start = stops_list[i][route]; //start at the current route
+			v3End = stops_list[i][(route + 1) % stops_list.size()]; //end at route +1 (if overboard will restart from 0)
 
-		//get the percentage
-		float fTimeBetweenStops = 2.0; //in seconds
+			//get the percentage
+			float fTimeBetweenStops = 0.5f; //in seconds
 
-		//map the value to be between 0.0 and 1.0
-		float fPercentage = MapValue(2.0f, 0.0f, fTimeBetweenStops, 0.0f, 1.0f);
+			//map the value to be between 0.0 and 1.0
+			float fPercentage = MapValue(fTimer, 0.0f, fTimeBetweenStops, 0.0f, 1.0f);
 
-		//calculate the current position
-		vector3 v3CurrentPos = glm::lerp(v3Start, v3End, fPercentage);
+			//calculate the current position
+			vector3 v3CurrentPos = glm::lerp(v3Start, v3End, fPercentage);
 
-		matrix4 m4Model = glm::translate(m4Offset, v3CurrentPos);
-		
-		m_pMeshMngr->AddSphereToRenderList(m4Model * glm::scale(vector3(0.1)), C_WHITE);
+			matrix4 m4Model = glm::translate(m4Offset, v3CurrentPos);
 
-		//if we are done with this route
-		if (fPercentage >= 1.0f)
-		{
-			route++; //go to the next route
-			route %= stops_list[i].size();//make sure we are within boundaries
-		}
+			m_pMeshMngr->AddSphereToRenderList(m4Model * glm::scale(vector3(0.1)), C_WHITE);
+
+			//if we are done with this route
+			if (fPercentage >= 1.0f)
+			{
+				route++; //go to the next route
+				fTimer = m_pSystem->GetDeltaTime(uClock);//restart the clock
+				route %= stops_list[i].size();//make sure we are within boundaries
+			}
+		//}
 
 		#pragma endregion 
 		/////////////////////////////////////////////////////////////////////////////////////
