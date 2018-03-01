@@ -72,6 +72,7 @@ void Application::ProcessKeyPressed(sf::Event a_event)
 	default: break;
 	case sf::Keyboard::Space:
 		break;
+	break;
 	}
 	//gui
 	gui.io.KeysDown[a_event.key.code] = true;
@@ -122,12 +123,6 @@ void Application::ProcessKeyReleased(sf::Event a_event)
 			}
 		}
 		break;
-	case sf::Keyboard::W:
-	{
-		vector3 v3Pos = m_pCamera->GetPosition();
-		m_pCamera->SetPosition(v3Pos + vector3(0.0f, 0.0f, 1.0f));
-	}
-	break;
 	}
 
 	//gui
@@ -135,6 +130,7 @@ void Application::ProcessKeyReleased(sf::Event a_event)
 	gui.io.KeyCtrl = a_event.key.control;
 	gui.io.KeyShift = a_event.key.shift;
 }
+
 //Joystick
 void Application::ProcessJoystickConnected(uint nController)
 {
@@ -385,9 +381,38 @@ void Application::ProcessKeyboard(void)
 	for discreet on/off use ProcessKeyboardPressed/Released
 	*/
 #pragma region Camera Position
-	float fSpeed = 0.1f;
+	float fSpeed = 0.5f;
 	float fMultiplier = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) ||
 		sf::Keyboard::isKeyPressed(sf::Keyboard::RShift);
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+	{
+		vector3 v3Pos = m_pCamera->GetPosition();
+		m_pCamera->SetPosition(v3Pos - vector3(0.0f, 0.0f, fSpeed));
+		m_pCamera->SetTarget(vector3(v3Pos.x, 3.0f, v3Pos.z - 1.0f));
+		m_pCamera->SetUp(vector3(0.0f, 1.0f, 0.0f));
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	{
+		vector3 v3Pos = m_pCamera->GetPosition();
+		m_pCamera->SetPosition(v3Pos - vector3(fSpeed, 0.0f, 0.0f));
+		m_pCamera->SetTarget(vector3(v3Pos.x - fSpeed, 3.0f, v3Pos.z - 1.0f));
+		m_pCamera->SetUp(vector3(0.0f, 1.0f, 0.0f));		
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+	{
+		vector3 v3Pos = m_pCamera->GetPosition();
+		m_pCamera->SetPosition(v3Pos + vector3(0.0f, 0.0f, fSpeed));
+		m_pCamera->SetTarget(vector3(v3Pos.x, 3.0f, v3Pos.z));
+		m_pCamera->SetUp(vector3(0.0f, 1.0f, 0.0f));
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	{
+		vector3 v3Pos = m_pCamera->GetPosition();
+		m_pCamera->SetPosition(v3Pos + vector3(fSpeed, 0.0f, 0.0f));
+		m_pCamera->SetTarget(vector3(v3Pos.x + fSpeed, 3.0f, v3Pos.z - 1.0f));
+		m_pCamera->SetUp(vector3(0.0f, 1.0f, 0.0f));
+	}
 
 	if (fMultiplier)
 		fSpeed *= 5.0f;
