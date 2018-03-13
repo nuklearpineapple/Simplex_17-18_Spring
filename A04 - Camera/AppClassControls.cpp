@@ -329,13 +329,14 @@ void Application::ArcBall(float a_fSensitivity)
 }
 void Application::CameraRotation(float a_fSpeed)
 {
+	// exit if right mouse is not clicked
 	if (m_bFPC == false)
 		return;
 
-	UINT	MouseX, MouseY;		// Coordinates for the mouse
+	UINT	MouseX = 1, MouseY = 1;		// Coordinates for the mouse
 	UINT	CenterX, CenterY;	// Coordinates for the center of the screen.
 
-								//Initialize the position of the pointer to the middle of the screen
+	//Initialize the position of the pointer to the middle of the screen
 	CenterX = m_pSystem->GetWindowX() + m_pSystem->GetWindowWidth() / 2;
 	CenterY = m_pSystem->GetWindowY() + m_pSystem->GetWindowHeight() / 2;
 
@@ -370,8 +371,17 @@ void Application::CameraRotation(float a_fSpeed)
 		fDeltaMouse = static_cast<float>(MouseY - CenterY);
 		fAngleX += fDeltaMouse * a_fSpeed;
 	}
+
+	vector3 m_v3Target = m_pCamera->GetTarget();
+	vector3 m_v3Up = m_pCamera->GetUp();
+
+	// adjust camera rotation if right mouse clicked
+	m_pCamera->SetTarget(vector3(m_v3Target.x - fAngleY, m_v3Target.y - fAngleX, 0.0f));
+	m_pCamera->SetUp(vector3(0.0f, 1.0f, 0.0f));
+
 	//Change the Yaw and the Pitch of the camera
-	SetCursorPos(CenterX, CenterY);//Position the mouse in the center
+	SetCursorPos(CenterX, CenterY); //Position the mouse in the center
+
 }
 //Keyboard
 void Application::ProcessKeyboard(void)
@@ -385,37 +395,70 @@ void Application::ProcessKeyboard(void)
 	float fMultiplier = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) ||
 		sf::Keyboard::isKeyPressed(sf::Keyboard::RShift);
 
+	vector3 v3Pos;
+
+// WASD keys | Set Pos Target And Up
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
-		vector3 v3Pos = m_pCamera->GetPosition();
+		v3Pos = m_pCamera->GetPosition();
 		m_pCamera->SetPosition(v3Pos - vector3(0.0f, 0.0f, fSpeed));
 		m_pCamera->SetTarget(vector3(v3Pos.x, 3.0f, v3Pos.z - 1.0f));
 		m_pCamera->SetUp(vector3(0.0f, 1.0f, 0.0f));
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 	{
-		vector3 v3Pos = m_pCamera->GetPosition();
+		v3Pos = m_pCamera->GetPosition();
 		m_pCamera->SetPosition(v3Pos - vector3(fSpeed, 0.0f, 0.0f));
 		m_pCamera->SetTarget(vector3(v3Pos.x - fSpeed, 3.0f, v3Pos.z - 1.0f));
 		m_pCamera->SetUp(vector3(0.0f, 1.0f, 0.0f));		
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 	{
-		vector3 v3Pos = m_pCamera->GetPosition();
+		v3Pos = m_pCamera->GetPosition();
 		m_pCamera->SetPosition(v3Pos + vector3(0.0f, 0.0f, fSpeed));
 		m_pCamera->SetTarget(vector3(v3Pos.x, 3.0f, v3Pos.z));
 		m_pCamera->SetUp(vector3(0.0f, 1.0f, 0.0f));
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
-		vector3 v3Pos = m_pCamera->GetPosition();
+		v3Pos = m_pCamera->GetPosition();
 		m_pCamera->SetPosition(v3Pos + vector3(fSpeed, 0.0f, 0.0f));
 		m_pCamera->SetTarget(vector3(v3Pos.x + fSpeed, 3.0f, v3Pos.z - 1.0f));
 		m_pCamera->SetUp(vector3(0.0f, 1.0f, 0.0f));
 	}
 
+// IJKL keys | Set Position only
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::I))
+	{
+		v3Pos = m_pCamera->GetPosition();
+		m_pCamera->SetPosition(v3Pos - vector3(0.0f, 0.0f, fSpeed));
+		//m_pCamera->SetTarget(vector3(v3Pos.x, 3.0f, v3Pos.z - 1.0f));
+		//m_pCamera->SetUp(vector3(0.0f, 1.0f, 0.0f));
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::J))
+	{
+		v3Pos = m_pCamera->GetPosition();
+		m_pCamera->SetPosition(v3Pos - vector3(fSpeed, 0.0f, 0.0f));
+		//m_pCamera->SetTarget(vector3(v3Pos.x - fSpeed, 3.0f, v3Pos.z - 1.0f));
+		//m_pCamera->SetUp(vector3(0.0f, 1.0f, 0.0f));
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::K))
+	{
+		v3Pos = m_pCamera->GetPosition();
+		m_pCamera->SetPosition(v3Pos + vector3(0.0f, 0.0f, fSpeed));
+		//m_pCamera->SetTarget(vector3(v3Pos.x, 3.0f, v3Pos.z));
+		//m_pCamera->SetUp(vector3(0.0f, 1.0f, 0.0f));
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::L))
+	{
+		v3Pos = m_pCamera->GetPosition();
+		m_pCamera->SetPosition(v3Pos + vector3(fSpeed, 0.0f, 0.0f));
+		//m_pCamera->SetTarget(vector3(v3Pos.x + fSpeed, 3.0f, v3Pos.z - 1.0f));
+		//m_pCamera->SetUp(vector3(0.0f, 1.0f, 0.0f));
+	}
+
 	if (fMultiplier)
-		fSpeed *= 5.0f;
+		fSpeed *= 6.0f;
 #pragma endregion
 }
 //Joystick

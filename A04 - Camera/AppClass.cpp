@@ -28,8 +28,8 @@ void Application::Update(void)
 	//Is the arcball active?
 	ArcBall();
 
-	//Is the first person camera active?
-	CameraRotation();
+	//Is the first person camera active? || changed speed of rotation
+	CameraRotation(.01);
 
 	//Add objects to the Manager
 	for (int j = -50; j < 50; j += 2)
