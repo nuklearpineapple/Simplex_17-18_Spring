@@ -397,64 +397,64 @@ void Application::ProcessKeyboard(void)
 
 	vector3 v3Pos;
 
-// WASD keys | Set Pos Target And Up
+// WASD keys | Set PosTarUp dynamic
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
+	{
+		v3Pos = m_pCamera->GetPosition();
+		m_pCamera->SetPosition(v3Pos - vector3(0.0f, 0.0f, fSpeed));
+		m_pCamera->SetTarget(m_pCamera->GetTarget());
+		m_pCamera->SetUp(m_pCamera->GetUp());
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	{
+		v3Pos = m_pCamera->GetPosition();
+		m_pCamera->SetPosition(v3Pos - vector3(fSpeed, 0.0f, 0.0f));
+		m_pCamera->SetTarget(m_pCamera->GetTarget());
+		m_pCamera->SetUp(m_pCamera->GetUp());
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+	{
+		v3Pos = m_pCamera->GetPosition();
+		m_pCamera->SetPosition(v3Pos + vector3(0.0f, 0.0f, fSpeed));
+		m_pCamera->SetTarget(m_pCamera->GetTarget());
+		m_pCamera->SetUp(m_pCamera->GetUp());
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	{
+		v3Pos = m_pCamera->GetPosition();
+		m_pCamera->SetPosition(v3Pos + vector3(fSpeed, 0.0f, 0.0f));
+		m_pCamera->SetTarget(m_pCamera->GetTarget());
+		m_pCamera->SetUp(m_pCamera->GetUp());
+	}
+
+// IJKL keys | Set PosTarUp Hard Code
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::I))
 	{
 		v3Pos = m_pCamera->GetPosition();
 		m_pCamera->SetPosition(v3Pos - vector3(0.0f, 0.0f, fSpeed));
 		m_pCamera->SetTarget(vector3(v3Pos.x, 3.0f, v3Pos.z - 1.0f));
 		m_pCamera->SetUp(vector3(0.0f, 1.0f, 0.0f));
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::J))
 	{
 		v3Pos = m_pCamera->GetPosition();
 		m_pCamera->SetPosition(v3Pos - vector3(fSpeed, 0.0f, 0.0f));
 		m_pCamera->SetTarget(vector3(v3Pos.x - fSpeed, 3.0f, v3Pos.z - 1.0f));
 		m_pCamera->SetUp(vector3(0.0f, 1.0f, 0.0f));		
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::K))
 	{
 		v3Pos = m_pCamera->GetPosition();
 		m_pCamera->SetPosition(v3Pos + vector3(0.0f, 0.0f, fSpeed));
 		m_pCamera->SetTarget(vector3(v3Pos.x, 3.0f, v3Pos.z));
 		m_pCamera->SetUp(vector3(0.0f, 1.0f, 0.0f));
 	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::L))
 	{
 		v3Pos = m_pCamera->GetPosition();
 		m_pCamera->SetPosition(v3Pos + vector3(fSpeed, 0.0f, 0.0f));
 		m_pCamera->SetTarget(vector3(v3Pos.x + fSpeed, 3.0f, v3Pos.z - 1.0f));
 		m_pCamera->SetUp(vector3(0.0f, 1.0f, 0.0f));
-	}
-
-// IJKL keys | Set Position only
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::I))
-	{
-		v3Pos = m_pCamera->GetPosition();
-		m_pCamera->SetPosition(v3Pos - vector3(0.0f, 0.0f, fSpeed));
-		//m_pCamera->SetTarget(vector3(v3Pos.x, 3.0f, v3Pos.z - 1.0f));
-		//m_pCamera->SetUp(vector3(0.0f, 1.0f, 0.0f));
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::J))
-	{
-		v3Pos = m_pCamera->GetPosition();
-		m_pCamera->SetPosition(v3Pos - vector3(fSpeed, 0.0f, 0.0f));
-		//m_pCamera->SetTarget(vector3(v3Pos.x - fSpeed, 3.0f, v3Pos.z - 1.0f));
-		//m_pCamera->SetUp(vector3(0.0f, 1.0f, 0.0f));
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::K))
-	{
-		v3Pos = m_pCamera->GetPosition();
-		m_pCamera->SetPosition(v3Pos + vector3(0.0f, 0.0f, fSpeed));
-		//m_pCamera->SetTarget(vector3(v3Pos.x, 3.0f, v3Pos.z));
-		//m_pCamera->SetUp(vector3(0.0f, 1.0f, 0.0f));
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::L))
-	{
-		v3Pos = m_pCamera->GetPosition();
-		m_pCamera->SetPosition(v3Pos + vector3(fSpeed, 0.0f, 0.0f));
-		//m_pCamera->SetTarget(vector3(v3Pos.x + fSpeed, 3.0f, v3Pos.z - 1.0f));
-		//m_pCamera->SetUp(vector3(0.0f, 1.0f, 0.0f));
 	}
 
 	if (fMultiplier)
