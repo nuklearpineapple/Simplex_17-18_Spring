@@ -327,6 +327,10 @@ void Application::ArcBall(float a_fSensitivity)
 	SetCursorPos(CenterX, CenterY);//Position the mouse in the center
 								   //return qArcBall; // return the new quaternion orientation
 }
+
+vector3 direction;
+vector3 right;
+
 void Application::CameraRotation(float a_fSpeed)
 {
 	// exit if right mouse is not clicked
@@ -372,11 +376,19 @@ void Application::CameraRotation(float a_fSpeed)
 		fAngleX += fDeltaMouse * a_fSpeed;
 	}
 
-	vector3 m_v3Target = m_pCamera->GetTarget();
-	vector3 m_v3Up = m_pCamera->GetUp();
+	direction = vector3(
+		cos(fAngleY) * sin(fAngleX),
+		sin(fAngleY),
+		cos(fAngleY) * cos(fAngleX));
+
+	right = vector3(
+	sin(fAngleX),
+		0,
+		cos(fAngleX));
 
 	// adjust camera rotation if right mouse clicked
-	m_pCamera->SetTarget(vector3(m_v3Target.x - fAngleY, m_v3Target.y - fAngleX, 0.0f));
+	m_pCamera->SetTarget(vector3(m_pCamera->GetTarget().x - fAngleY, 
+		m_pCamera->GetTarget().y - fAngleX, 0.0f));
 	m_pCamera->SetUp(vector3(0.0f, 1.0f, 0.0f));
 
 	//Change the Yaw and the Pitch of the camera
@@ -401,28 +413,28 @@ void Application::ProcessKeyboard(void)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
 		v3Pos = m_pCamera->GetPosition();
-		m_pCamera->SetPosition(v3Pos - vector3(0.0f, 0.0f, fSpeed));
+		m_pCamera->SetPosition(v3Pos -= vector3(0.0f, 0.0f, fSpeed));
 		m_pCamera->SetTarget(m_pCamera->GetTarget());
 		m_pCamera->SetUp(m_pCamera->GetUp());
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 	{
 		v3Pos = m_pCamera->GetPosition();
-		m_pCamera->SetPosition(v3Pos - vector3(fSpeed, 0.0f, 0.0f));
+		m_pCamera->SetPosition(v3Pos -= vector3(fSpeed, 0.0f, 0.0f));
 		m_pCamera->SetTarget(m_pCamera->GetTarget());
 		m_pCamera->SetUp(m_pCamera->GetUp());
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 	{
 		v3Pos = m_pCamera->GetPosition();
-		m_pCamera->SetPosition(v3Pos + vector3(0.0f, 0.0f, fSpeed));
+		m_pCamera->SetPosition(v3Pos += vector3(0.0f, 0.0f, fSpeed));
 		m_pCamera->SetTarget(m_pCamera->GetTarget());
 		m_pCamera->SetUp(m_pCamera->GetUp());
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
 		v3Pos = m_pCamera->GetPosition();
-		m_pCamera->SetPosition(v3Pos + vector3(fSpeed, 0.0f, 0.0f));
+		m_pCamera->SetPosition(v3Pos += vector3(fSpeed, 0.0f, 0.0f));
 		m_pCamera->SetTarget(m_pCamera->GetTarget());
 		m_pCamera->SetUp(m_pCamera->GetUp());
 	}
