@@ -21,7 +21,7 @@ void MyMesh::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivisions,
 	//-------------------------------------------------------------------
 
 	vector3 coneCenter(0, 0, 0); // COOR: Center of the base 
-	vector3 coneHeight(0, 0, a_fHeight); // COOR: Height of the cone
+	vector3 coneHeight(0, -a_fHeight, 0); // COOR: Height of the cone
 
 	std::vector<vector3> coorArray; // Point Coordinates Array
 
@@ -36,20 +36,20 @@ void MyMesh::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivisions,
 		float newY = (float)sin(currentAngle); // sin of angle
 
 		newX = newX * a_fRadius;
-		newY = newY * a_fRadius;
+		newY = newY * a_fRadius * -1;
 
-		vector3 currentPoint = vector3(currentX, currentY, 0); // generate x y z coord
+		vector3 currentPoint = vector3(currentX, 0, (currentY*-1)); // generate x y z coord
 
 		coorArray.push_back(currentPoint); // push back x y z coord into array
 
 		// ADD TRIANGLES TO DRAW SHAPE
 		if (i != 0) {
 			// Base
-			AddTri(coorArray[i], coorArray[i - 1], coneCenter);
-			AddTri(coorArray[i - 1], coorArray[i], coneCenter);
+			AddTri(coorArray[i], coneCenter, coorArray[i - 1]);
+			AddTri(coorArray[i - 1], coneCenter, coorArray[i]);
 
 			// Height
-			AddTri(coorArray[i], coorArray[i - 1], coneHeight);
+			AddTri(coorArray[i], coorArray[i - 1] , coneHeight);
 			AddTri(coorArray[i - 1], coorArray[i], coneHeight);
 		}
 
