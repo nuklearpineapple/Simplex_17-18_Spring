@@ -327,10 +327,6 @@ void Application::ArcBall(float a_fSensitivity)
 	SetCursorPos(CenterX, CenterY);//Position the mouse in the center
 								   //return qArcBall; // return the new quaternion orientation
 }
-
-vector3 direction;
-vector3 right;
-
 void Application::CameraRotation(float a_fSpeed)
 {
 	// exit if right mouse is not clicked
@@ -376,16 +372,6 @@ void Application::CameraRotation(float a_fSpeed)
 		fAngleX += fDeltaMouse * a_fSpeed;
 	}
 
-	direction = vector3(
-		cos(fAngleY) * sin(fAngleX),
-		sin(fAngleY),
-		cos(fAngleY) * cos(fAngleX));
-
-	right = vector3(
-	sin(fAngleX),
-		0,
-		cos(fAngleX));
-
 	// adjust camera rotation if right mouse clicked
 	m_pCamera->SetTarget(vector3(m_pCamera->GetTarget().x - fAngleY, 
 		m_pCamera->GetTarget().y - fAngleX, 0.0f));
@@ -403,17 +389,32 @@ void Application::ProcessKeyboard(void)
 	for discreet on/off use ProcessKeyboardPressed/Released
 	*/
 #pragma region Camera Position
-	float fSpeed = 0.5f;
+	float fSpeed = 0.4f;
 	float fMultiplier = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) ||
 		sf::Keyboard::isKeyPressed(sf::Keyboard::RShift);
 
+	// position of the camera
 	vector3 v3Pos;
+
+	// direction the camera is facing
+	vector3 direction = vector3(
+		cos(m_pCamera->GetTarget().x) * cos(m_pCamera->GetTarget().y),
+		sin(m_pCamera->GetTarget().y),
+		cos(m_pCamera->GetTarget().x) * cos(m_pCamera->GetTarget().y));
+
+	direction = glm::normalize(direction);
+
+	// right vector to camera
+	vector3 right = vector3(
+		sin(m_pCamera->GetTarget().x),
+		0,
+		cos(m_pCamera->GetTarget().x));
 
 // WASD keys | Set PosTarUp dynamic
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
 		v3Pos = m_pCamera->GetPosition();
-		m_pCamera->SetPosition(v3Pos -= vector3(0.0f, 0.0f, fSpeed));
+		m_pCamera->SetPosition(v3Pos += (direction / 10.0f)); // supposed to be get target?
 		m_pCamera->SetTarget(m_pCamera->GetTarget());
 		m_pCamera->SetUp(m_pCamera->GetUp());
 	}
