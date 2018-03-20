@@ -395,79 +395,67 @@ void Application::ProcessKeyboard(void)
 
 	// position of the camera
 	vector3 v3Pos;
-
-	// direction the camera is facing
-	vector3 direction = vector3(
-		cos(m_pCamera->GetTarget().x) * cos(m_pCamera->GetTarget().y),
-		sin(m_pCamera->GetTarget().y),
-		cos(m_pCamera->GetTarget().x) * cos(m_pCamera->GetTarget().y));
-
-	direction = glm::normalize(direction);
-
-	// right vector to camera
-	vector3 right = vector3(
-		sin(m_pCamera->GetTarget().x),
-		0,
-		cos(m_pCamera->GetTarget().x));
+	vector3 v3Target;
+	vector3 v3Direction;
+	vector3 v3Right;
+	vector3 v3Up;
 
 // WASD keys | Set PosTarUp dynamic
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
 	{
+		// fetch current Position Target and Up
 		v3Pos = m_pCamera->GetPosition();
-		m_pCamera->SetPosition(v3Pos += (direction / 10.0f)); // supposed to be get target?
-		m_pCamera->SetTarget(m_pCamera->GetTarget());
-		m_pCamera->SetUp(m_pCamera->GetUp());
+		v3Target = m_pCamera->GetTarget();
+		v3Up = m_pCamera->GetUp();
+
+		v3Direction = v3Target - v3Pos;
+		v3Direction = glm::normalize(v3Direction);
+
+		m_pCamera->SetPosition(v3Pos + v3Direction);
+		m_pCamera->SetTarget(v3Target + v3Direction);
+		m_pCamera->SetUp(m_pCamera->GetUp() + v3Direction);
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 	{
+		// fetch current Position Target and Up
 		v3Pos = m_pCamera->GetPosition();
-		m_pCamera->SetPosition(v3Pos -= vector3(fSpeed, 0.0f, 0.0f));
-		m_pCamera->SetTarget(m_pCamera->GetTarget());
-		m_pCamera->SetUp(m_pCamera->GetUp());
+		v3Target = m_pCamera->GetTarget();
+		v3Up = m_pCamera->GetUp();
+
+		v3Direction = v3Target - v3Pos;
+		v3Direction = glm::normalize(v3Direction);
+		v3Right = glm::normalize(glm::cross(v3Up, v3Direction));
+
+		m_pCamera->SetPosition(v3Pos + v3Right);
+		m_pCamera->SetTarget(m_pCamera->GetTarget() + v3Right);
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 	{
+		// fetch current Position Target and Up
 		v3Pos = m_pCamera->GetPosition();
-		m_pCamera->SetPosition(v3Pos += vector3(0.0f, 0.0f, fSpeed));
-		m_pCamera->SetTarget(m_pCamera->GetTarget());
-		m_pCamera->SetUp(m_pCamera->GetUp());
+		v3Target = m_pCamera->GetTarget();
+		v3Up = m_pCamera->GetUp();
+
+		v3Direction = v3Target - v3Pos;
+		v3Direction = glm::normalize(v3Direction);
+
+		m_pCamera->SetPosition(v3Pos - v3Direction);
+		m_pCamera->SetTarget(v3Target - v3Direction);
+		m_pCamera->SetUp(m_pCamera->GetUp() - v3Direction);
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
+		// fetch current Position Target and Up
 		v3Pos = m_pCamera->GetPosition();
-		m_pCamera->SetPosition(v3Pos += vector3(fSpeed, 0.0f, 0.0f));
-		m_pCamera->SetTarget(m_pCamera->GetTarget());
-		m_pCamera->SetUp(m_pCamera->GetUp());
-	}
+		v3Target = m_pCamera->GetTarget();
+		v3Up = m_pCamera->GetUp();
 
-// IJKL keys | Set PosTarUp Hard Code
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::I))
-	{
-		v3Pos = m_pCamera->GetPosition();
-		m_pCamera->SetPosition(v3Pos - vector3(0.0f, 0.0f, fSpeed));
-		m_pCamera->SetTarget(vector3(v3Pos.x, 3.0f, v3Pos.z - 1.0f));
-		m_pCamera->SetUp(vector3(0.0f, 1.0f, 0.0f));
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::J))
-	{
-		v3Pos = m_pCamera->GetPosition();
-		m_pCamera->SetPosition(v3Pos - vector3(fSpeed, 0.0f, 0.0f));
-		m_pCamera->SetTarget(vector3(v3Pos.x - fSpeed, 3.0f, v3Pos.z - 1.0f));
-		m_pCamera->SetUp(vector3(0.0f, 1.0f, 0.0f));		
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::K))
-	{
-		v3Pos = m_pCamera->GetPosition();
-		m_pCamera->SetPosition(v3Pos + vector3(0.0f, 0.0f, fSpeed));
-		m_pCamera->SetTarget(vector3(v3Pos.x, 3.0f, v3Pos.z));
-		m_pCamera->SetUp(vector3(0.0f, 1.0f, 0.0f));
-	}
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::L))
-	{
-		v3Pos = m_pCamera->GetPosition();
-		m_pCamera->SetPosition(v3Pos + vector3(fSpeed, 0.0f, 0.0f));
-		m_pCamera->SetTarget(vector3(v3Pos.x + fSpeed, 3.0f, v3Pos.z - 1.0f));
-		m_pCamera->SetUp(vector3(0.0f, 1.0f, 0.0f));
+		v3Direction = v3Target - v3Pos;
+		v3Direction = glm::normalize(v3Direction);
+		v3Right = glm::normalize(glm::cross(v3Up, v3Direction));
+
+		m_pCamera->SetPosition(v3Pos - v3Right);
+		m_pCamera->SetTarget(m_pCamera->GetTarget() - v3Right);
 	}
 
 	if (fMultiplier)
