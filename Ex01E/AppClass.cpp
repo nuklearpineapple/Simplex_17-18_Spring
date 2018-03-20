@@ -13,10 +13,31 @@ void Application::Display(void)
 #pragma endregion
 	//Your code goes here ---------------------------------------------------------
 	
-	m_sProgrammer = "Alberto Bobadilla - labigm@rit.edu"; //Replace with your name and email
-	vector3 v3CurrentPos; //Initialize this variable accordingly
-	matrix4 m4Model = glm::translate(IDENTITY_M4, v3CurrentPos) * ToMatrix4(m_qArcBall);
+	m_sProgrammer = "Tim Ascencio - ta3755@rit.edu"; //Replace with your name and email
+
+	vector3 v3Start; //start point
+	vector3 v3End; //end point
+	static uint route = 0; //current route
+	v3Start = m_v3StopList[route]; //start at the current route
+	v3End = m_v3StopList[(route + 1) % m_v3StopList.size()]; //end at route +1 (if overboard will restart from 0)
+
+	//get the percentage
+	float fTimeBetweenStops = 2.0;//in seconds
 	
+	//map the value to be between 0.0 and 1.0
+	float fPercentage = MapValue(fTimer, 0.0f, fTimeBetweenStops, 0.0f, 1.0f);
+
+	//calculate the current position
+	vector3 v3CurrentPos = glm::lerp(v3Start, v3End, fPercentage);
+	matrix4 m4Model = glm::translate(IDENTITY_M4, v3CurrentPos) * ToMatrix4(m_qArcBall);
+
+	//if we are done with this route
+	if (fPercentage >= 1.0f)
+	{
+		route++; //go to the next route
+		fTimer = m_pSystem->GetDeltaTime(uClock);//restart the clock
+		route %= m_v3StopList.size();//make sure we are within boundaries
+	}
 	
 	//---------------------------------------------------------
 #pragma region DOES NOT NEED CHANGES

@@ -20,11 +20,44 @@ void MyMesh::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivisions,
 	// Replace this with your code:
 	//-------------------------------------------------------------------
 
+	vector3 coneCenter(0, 0, 0); // COOR: Center of the base 
+	vector3 coneHeight(0, 0, a_fHeight); // COOR: Height of the cone
 
+	std::vector<vector3> coorArray; // Point Coordinates Array
 
-	GenerateCube(a_fRadius, C_RED); //Remember AddTri and AddVertexPosition are your friends. 
+	float currentX = a_fRadius; // radius is current x + radius x=0
+	float currentY = 0; // radius is current y y=0
+	float step = ((float)(2*PI) / a_nSubdivisions); // Define Angle based on subdivisions
+	float currentAngle = step; // store angle
 
+	for (int i = 0; i <= a_nSubdivisions; i++) {
 
+		float newX = (float)cos(currentAngle); // cosine of angle
+		float newY = (float)sin(currentAngle); // sin of angle
+
+		newX = newX * a_fRadius;
+		newY = newY * a_fRadius;
+
+		vector3 currentPoint = vector3(currentX, currentY, 0); // generate x y z coord
+
+		coorArray.push_back(currentPoint); // push back x y z coord into array
+
+		// ADD TRIANGLES TO DRAW SHAPE
+		if (i != 0) {
+			// Base
+			AddTri(coorArray[i], coorArray[i - 1], coneCenter);
+			AddTri(coorArray[i - 1], coorArray[i], coneCenter);
+
+			// Height
+			AddTri(coorArray[i], coorArray[i - 1], coneHeight);
+			AddTri(coorArray[i - 1], coorArray[i], coneHeight);
+		}
+
+		currentX = newX;
+		currentY = newY;
+
+		currentAngle += step; // next angle
+	}
 
 	//-------------------------------------------------------------------
 	//No need for changes below this line
