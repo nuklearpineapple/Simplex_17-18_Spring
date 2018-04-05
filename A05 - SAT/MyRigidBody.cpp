@@ -287,6 +287,38 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	(eSATResults::SAT_NONE has a value of 0)
 	*/
 
-	//there is no axis test that separates this two objects
-	return eSATResults::SAT_NONE;
+	// Get a b c d
+	vector3 a = m_v3MinG;
+	vector3 b = vector3(m_v3MaxL.x, m_v3MinL.y, m_v3MinL.z);
+	vector3 c = a_pOther->m_v3MinG;
+	vector3 d = vector3(a_pOther->m_v3MaxL.x, a_pOther->m_v3MinL.y, a_pOther->m_v3MinL.z);
+	vector3 ab = b-a; // distance between points yields edge
+	vector3 cd = d-c; // distance between points yields edge
+
+	// Compute a tentative separating axis for ab and cd
+	vector3 m = glm::cross(ab, cd);
+
+	// check SAT for ab, cd 
+	if (abs(m.x) < .25 ||
+		abs(m.y) < .25 || 
+		abs(m.z) < .25) {
+		// No axis between bodies, close SAT
+		return eSATResults::SAT_NONE;
+	} else {
+		// Given separating axis is still available fine tune calculations
+		// Edges ab and cd must be (near) parallel
+		vector3 n = glm::cross(ab, c - a);
+		m = glm::cross(ab, n);
+
+		// check SAT for ab, c - a
+		if (abs(m.x) < .25 ||
+			abs(m.y) < .25 ||
+			abs(m.z) < .25) {
+			// No axis between bodies, close SAT
+			return eSATResults::SAT_NONE;
+		}
+	}
+
+	// Given SAT is not satisfied, return 1
+	return 1;
 }
