@@ -44,8 +44,8 @@ class MyRigidBody
 
 	struct OBB {
 		vector3 c; // center point
-		vector3 u;
-		vector3 e;
+		vector3 u[3]; // axes 
+		vector3 e; // half_width
 	};
 
 public:

@@ -284,15 +284,19 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	OBB a;
 	OBB b;
 
-	// assign a.u coordinates
-	a.u = this->m_v3MaxG;
-	b.u = a_pOther->m_v3MaxG;
-
-	// assign a.c centers
+	// assign c centers
 	a.c = this->m_v3Center;
 	b.c = a_pOther->m_v3Center;
 
-	// assign a.e half_widths
+	// assign u axes , make x, y, z axes
+	a.u[0] = this->m_v3MinG;
+	b.u[0] = a_pOther->m_v3MinG;
+
+	// assign u axes , make x, y, z axes
+	a.u[2] = this->m_v3MaxG;
+	b.u[2] = a_pOther->m_v3MaxG;
+
+	// assign e half_widths
 	a.e = this->m_v3HalfWidth;
 	b.e = a_pOther->m_v3HalfWidth;
 
@@ -306,7 +310,7 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	// Compute translation vector t
 	vector3 t = b.c - a.c;
 	// Bring translation into a's coordinate frame
-	t = vector3(glm::dot(t, a.u), glm::dot(t, a.u), glm::dot(t, a.u));
+	t = vector3(glm::dot(t, a.u[0]), glm::dot(t, a.u[2]), glm::dot(t, a.u[2]));
 
 	// Compute common subexpressions. Add in an epsilon term to
 	// counteract arithmetic errors when two edges are parallel and
