@@ -289,10 +289,10 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	b.c = a_pOther->m_v3Center;
 
 	// assign u axes , [0] = x axis , [2] = z axis
-	a.u[0] = vector3(this->m_v3MaxG.x - a.c.x, this->m_v3MaxG.y, this->m_v3MaxG.z);
-	a.u[2] = vector3(this->m_v3MaxG.x, this->m_v3MaxG.y, this->m_v3MaxG.z - a.c.z);
-	b.u[0] = vector3(a_pOther->m_v3MaxG.x - b.c.x, a_pOther->m_v3MaxG.y, a_pOther->m_v3MaxG.z);
-	b.u[2] = vector3(a_pOther->m_v3MaxG.x, a_pOther->m_v3MaxG.y, a_pOther->m_v3MaxG.z - b.c.z);
+	a.u[0] = vector3(this->m_fRadius, this->m_v3MaxG.y, this->m_v3MaxG.z);
+	//a.u[2] = vector3(this->m_v3MaxG.x, this->m_v3MaxG.y, this->m_fRadius);
+	//b.u[0] = vector3(this->m_fRadius, a_pOther->m_v3MaxG.y, a_pOther->m_v3MaxG.z);
+	//b.u[2] = vector3(a_pOther->m_v3MaxG.x, a_pOther->m_v3MaxG.y, this->m_fRadius);
 
 	// assign e half_widths
 	a.e = this->m_v3HalfWidth;
