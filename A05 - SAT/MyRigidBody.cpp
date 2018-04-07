@@ -288,13 +288,11 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	a.c = this->m_v3Center;
 	b.c = a_pOther->m_v3Center;
 
-	// assign u axes , make x, y, z axes
-	a.u[0] = this->m_v3MinG;
-	b.u[0] = a_pOther->m_v3MinG;
-
-	// assign u axes , make x, y, z axes
-	a.u[2] = this->m_v3MaxG;
-	b.u[2] = a_pOther->m_v3MaxG;
+	// assign u axes , [0] = x axis , [2] = z axis
+	a.u[0] = vector3(this->m_v3MaxG.x - a.c.x, this->m_v3MaxG.y, this->m_v3MaxG.z);
+	a.u[2] = vector3(this->m_v3MaxG.x, this->m_v3MaxG.y, this->m_v3MaxG.z - a.c.z);
+	b.u[0] = vector3(a_pOther->m_v3MaxG.x - b.c.x, a_pOther->m_v3MaxG.y, a_pOther->m_v3MaxG.z);
+	b.u[2] = vector3(a_pOther->m_v3MaxG.x, a_pOther->m_v3MaxG.y, a_pOther->m_v3MaxG.z - b.c.z);
 
 	// assign e half_widths
 	a.e = this->m_v3HalfWidth;
@@ -334,51 +332,51 @@ uint MyRigidBody::SAT(MyRigidBody* const a_pOther)
 	}
 
 	#pragma region Extra Testing
-	//// Test axis L = A0 x B0
-	//ra = a.e[1] * AbsR[2][0] + a.e[2] * AbsR[1][0];
-	//rb = b.e[1] * AbsR[0][2] + b.e[2] * AbsR[0][1];
-	//if (glm::abs(t[2] * R[1][0] - t[1] * R[2][0]) > ra + rb) return 0;
+	// Test axis L = A0 x B0
+	ra = a.e[1] * AbsR[2][0] + a.e[2] * AbsR[1][0];
+	rb = b.e[1] * AbsR[0][2] + b.e[2] * AbsR[0][1];
+	if (glm::abs(t[2] * R[1][0] - t[1] * R[2][0]) > ra + rb) return 0;
 
-	//// Test axis L = A0 x B1
-	//ra = a.e[1] * AbsR[2][1] + a.e[2] * AbsR[1][1];
-	//rb = b.e[0] * AbsR[0][2] + b.e[2] * AbsR[0][0];
-	//if (glm::abs(t[2] * R[1][1] - t[1] * R[2][1]) > ra + rb) return 0;
+	// Test axis L = A0 x B1
+	ra = a.e[1] * AbsR[2][1] + a.e[2] * AbsR[1][1];
+	rb = b.e[0] * AbsR[0][2] + b.e[2] * AbsR[0][0];
+	if (glm::abs(t[2] * R[1][1] - t[1] * R[2][1]) > ra + rb) return 0;
 
-	//// Test axis L = A0 x B2
-	//ra = a.e[1] * AbsR[2][2] + a.e[2] * AbsR[1][2];
-	//rb = b.e[0] * AbsR[0][1] + b.e[1] * AbsR[0][0];
-	//if (glm::abs(t[2] * R[1][2] - t[1] * R[2][2]) > ra + rb) return 0;
+	// Test axis L = A0 x B2
+	ra = a.e[1] * AbsR[2][2] + a.e[2] * AbsR[1][2];
+	rb = b.e[0] * AbsR[0][1] + b.e[1] * AbsR[0][0];
+	if (glm::abs(t[2] * R[1][2] - t[1] * R[2][2]) > ra + rb) return 0;
 
-	//// Test axis L = A1 x B0
-	//ra = a.e[0] * AbsR[2][0] + a.e[2] * AbsR[0][0];
-	//rb = b.e[1] * AbsR[1][2] + b.e[2] * AbsR[1][1];
+	// Test axis L = A1 x B0
+	ra = a.e[0] * AbsR[2][0] + a.e[2] * AbsR[0][0];
+	rb = b.e[1] * AbsR[1][2] + b.e[2] * AbsR[1][1];
 
-	//if (glm::abs(t[0] * R[2][0] - t[2] * R[0][0]) > ra + rb) return 0;
+	if (glm::abs(t[0] * R[2][0] - t[2] * R[0][0]) > ra + rb) return 0;
 
-	//// Test axis L = A1 x B1
-	//ra = a.e[0] * AbsR[2][1] + a.e[2] * AbsR[0][1];
-	//rb = b.e[0] * AbsR[1][2] + b.e[2] * AbsR[1][0];
-	//if (glm::abs(t[0] * R[2][1] - t[2] * R[0][1]) > ra + rb) return 0;
+	// Test axis L = A1 x B1
+	ra = a.e[0] * AbsR[2][1] + a.e[2] * AbsR[0][1];
+	rb = b.e[0] * AbsR[1][2] + b.e[2] * AbsR[1][0];
+	if (glm::abs(t[0] * R[2][1] - t[2] * R[0][1]) > ra + rb) return 0;
 
-	//// Test axis L = A1 x B2
-	//ra = a.e[0] * AbsR[2][2] + a.e[2] * AbsR[0][2];
-	//rb = b.e[0] * AbsR[1][1] + b.e[1] * AbsR[1][0];
-	//if (glm::abs(t[0] * R[2][2] - t[2] * R[0][2]) > ra + rb) return 0;
+	// Test axis L = A1 x B2
+	ra = a.e[0] * AbsR[2][2] + a.e[2] * AbsR[0][2];
+	rb = b.e[0] * AbsR[1][1] + b.e[1] * AbsR[1][0];
+	if (glm::abs(t[0] * R[2][2] - t[2] * R[0][2]) > ra + rb) return 0;
 
-	//// Test axis L = A2 x B0
-	//ra = a.e[0] * AbsR[1][0] + a.e[1] * AbsR[0][0];
-	//rb = b.e[1] * AbsR[2][2] + b.e[2] * AbsR[2][1];
-	//if (glm::abs(t[1] * R[0][0] - t[0] * R[1][0]) > ra + rb) return 0;
+	// Test axis L = A2 x B0
+	ra = a.e[0] * AbsR[1][0] + a.e[1] * AbsR[0][0];
+	rb = b.e[1] * AbsR[2][2] + b.e[2] * AbsR[2][1];
+	if (glm::abs(t[1] * R[0][0] - t[0] * R[1][0]) > ra + rb) return 0;
 
-	//// Test axis L = A2 x B1
-	//ra = a.e[0] * AbsR[1][1] + a.e[1] * AbsR[0][1];
-	//rb = b.e[0] * AbsR[2][2] + b.e[2] * AbsR[2][0];
-	//if (glm::abs(t[1] * R[0][1] - t[0] * R[1][1]) > ra + rb) return 0;
+	// Test axis L = A2 x B1
+	ra = a.e[0] * AbsR[1][1] + a.e[1] * AbsR[0][1];
+	rb = b.e[0] * AbsR[2][2] + b.e[2] * AbsR[2][0];
+	if (glm::abs(t[1] * R[0][1] - t[0] * R[1][1]) > ra + rb) return 0;
 
-	//// Test axis L = A2 x B2
-	//ra = a.e[0] * AbsR[1][2] + a.e[1] * AbsR[0][2];
-	//rb = b.e[0] * AbsR[2][1] + b.e[1] * AbsR[2][0];
-	//if (glm::abs(t[1] * R[0][2] - t[0] * R[1][2]) > ra + rb) return 0;
+	// Test axis L = A2 x B2
+	ra = a.e[0] * AbsR[1][2] + a.e[1] * AbsR[0][2];
+	rb = b.e[0] * AbsR[2][1] + b.e[1] * AbsR[2][0];
+	if (glm::abs(t[1] * R[0][2] - t[0] * R[1][2]) > ra + rb) return 0;
 	#pragma endregion
 	
 	// Since no separating axis is found, the OBBs must be intersecting
