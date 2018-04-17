@@ -222,6 +222,11 @@ void MyRigidBody::AddCollisionWith(MyRigidBody* other)
 	/*
 		check if the object is already in the colliding set, if
 		the object is already there return with no changes
+
+		-Tim Notes
+		colliding_set = dimension?
+		return as a figure of speech or literally? void method
+		-End Tim Notes
 	*/
 
 	//insert the entry
