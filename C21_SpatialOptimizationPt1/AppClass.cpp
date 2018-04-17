@@ -28,23 +28,41 @@ void Application::InitVariables(void)
 			vector3 v3Position = vector3(glm::sphericalRand(34.0f));
 			matrix4 m4Position = glm::translate(v3Position);
 			m_pEntityMngr->SetModelMatrix(m4Position);
+
+			/* Add each entity to separate dimension
+			 * removes all potential collisions
+			 */
 			//m_pEntityMngr->AddDimension(-1, uIndex);
 			//++uIndex;
 			
-			if (v3Position.x < 0.0f)
-			{
-				if (v3Position.x < -17.0f)
-					m_pEntityMngr->AddDimension(-1, 1);
-				else
-					m_pEntityMngr->AddDimension(-1, 2);
-			}
-			else if (v3Position.x > 0.0f)
-			{
-				if (v3Position.x > 17.0f)
-					m_pEntityMngr->AddDimension(-1, 3);
-				else
-					m_pEntityMngr->AddDimension(-1, 4);
-			}
+			#pragma region Hard Code Dimensions
+
+			// dimension 1
+			if (v3Position.x < 0.0f && v3Position.y < 0.0f && v3Position.z > 0.0f)
+				m_pEntityMngr->AddDimension(-1, 1);
+			// dimension 2
+			if (v3Position.x < 0.0f && v3Position.y > 0.0f && v3Position.z > 0.0f)
+				m_pEntityMngr->AddDimension(-1, 2);
+			// dimension 3
+			if (v3Position.x > 0.0f && v3Position.y > 0.0f && v3Position.z > 0.0f)
+				m_pEntityMngr->AddDimension(-1, 3);
+			// dimension 4
+			if (v3Position.x > 0.0f && v3Position.y < 0.0f && v3Position.z > 0.0f)
+				m_pEntityMngr->AddDimension(-1, 4);
+			// dimension 5
+			if (v3Position.x < 0.0f && v3Position.y < 0.0f && v3Position.z < 0.0f)
+				m_pEntityMngr->AddDimension(-1, 5);
+			// dimension 6
+			if (v3Position.x < 0.0f && v3Position.y > 0.0f && v3Position.z < 0.0f)
+				m_pEntityMngr->AddDimension(-1, 6);
+			// dimension 7
+			if (v3Position.x > 0.0f && v3Position.y > 0.0f && v3Position.z < 0.0f)
+				m_pEntityMngr->AddDimension(-1, 7);
+			// dimension 8
+			if (v3Position.x > 0.0f && v3Position.y < 0.0f && v3Position.z < 0.0f)
+				m_pEntityMngr->AddDimension(-1, 8);
+
+			#pragma endregion
 			
 		}
 	}

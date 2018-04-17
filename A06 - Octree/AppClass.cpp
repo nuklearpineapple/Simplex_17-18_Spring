@@ -46,6 +46,11 @@ void Application::Update(void)
 	//Update Entity Manager
 	m_pEntityMngr->Update();
 
+	// Draw Grid lines
+	m_pMeshMngr->AddGridToRenderList(glm::scale(vector3(0.7f))); // Y AXIS
+	m_pMeshMngr->AddGridToRenderList(glm::scale(vector3(0.7f)) * glm::rotate(IDENTITY_M4, 90.0f, AXIS_Y)); // Z AXIS
+	m_pMeshMngr->AddGridToRenderList(glm::scale(vector3(0.7f)) * glm::rotate(IDENTITY_M4, 90.0f, AXIS_X)); // X AXIS
+
 	//Add objects to render list
 	m_pEntityMngr->AddEntityToRenderList(-1, true);
 }
