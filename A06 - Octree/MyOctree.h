@@ -12,7 +12,16 @@ namespace Simplex
 {
 	// amount of nodes created in octree
 	uint g_iEndNodeCount;
+
+	// octree subdivision count
+	uint g_CurrentSubdivision;
 	
+	// subdivision max
+	uint g_iMaxSubdivision;
+
+	// entity max
+	uint g_iMaxEntity;
+
 	// store the octree node ID's , values 0 to 7
 	enum eOctreeNodes
 	{
@@ -32,7 +41,9 @@ namespace Simplex
 			MyOctree();
 			~MyOctree();
 			void CreateOctreeDimensions(MyEntityManager* entityMngr);
-			void CreateNode(MyEntityManager* entityMngr, std::vector<bool> vList, vector3 center, float width, uint nodeID);
+			void CreateNewNode(MyEntityManager* entityMngr, std::vector<bool> vList, vector3 center, float width, uint nodeID);
+			void CreateNode(MyEntityManager* entityMngr, vector3* nodeVertices, vector3 center, float width);
+			void DrawOctree(MyOctree* node, MyEntityManager* entityMngr);
 			vector3 GetNewNodeCenter(vector3 center, float width, uint nodeID);
 
 		private:
@@ -53,5 +64,4 @@ namespace Simplex
 			// if we have divided this node
 			bool bIsSubdivided;
 	};
-
 }
