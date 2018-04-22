@@ -118,7 +118,7 @@ void Simplex::MyOctree::CreateNode(MyEntityManager * entityMngr, vector3 * nodeV
 		std::vector<bool> list7(entityCount); // RIGHT_BOTTOM_FRONT
 		std::vector<bool> list8(entityCount); // RIGHT_BOTTOM_BACK
 
-		for (int i = 0; i < entityCount; i++) 
+		for (uint i = 0; i < entityCount; i++) 
 		{
 			vector3 entityCenter = entityMngr->GetEntity(i)->GetRigidBody()->GetCenterGlobal();
 
@@ -187,13 +187,6 @@ void Simplex::MyOctree::DrawOctree(MyOctree * node, MyEntityManager* entityMngr)
 		DrawOctree(node->cOctreeNodes[RIGHT_TOP_BACK], entityMngr);
 		DrawOctree(node->cOctreeNodes[RIGHT_BOTTOM_FRONT], entityMngr);
 		DrawOctree(node->cOctreeNodes[RIGHT_BOTTOM_BACK], entityMngr);
-	}
-	else
-	{
-		for (int i = 0; i < entityMngr->GetEntityCount(); i++) 
-		{
-
-		}
 	}
 }
 
