@@ -54,7 +54,6 @@ void Application::Display(void)
 	//calculate the current position
 	vector3 v3CurrentPos;
 
-
 	//your code goes here
 	
 	static int positionCount = 0; // retains current point in array (starting point)

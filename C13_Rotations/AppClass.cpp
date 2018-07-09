@@ -35,8 +35,8 @@ void Application::Display(void)
 	//calculate the current position
 	matrix4 m4Rotation = glm::rotate(IDENTITY_M4, fTimer * 60.0f, vector3(0.0f, 0.0f, 1.0f));
 	matrix4 m4Model;
-	for (uint i = 0; i < 2500; ++i)
-		m4Model = m4Rotation * glm::translate(IDENTITY_M4, vector3(2.5f, 0.0f, 0.0f)) * glm::transpose(m4Rotation);
+	//for (uint i = 0; i < 20; ++i)
+		m4Model = m4Rotation * glm::translate(IDENTITY_M4, vector3(1.5f, 0.0f, 0.0f)) * glm::transpose(m4Rotation);
 	
 	/*
 	//extra part, how to rotate around a point (in this case the base of the cone)
@@ -53,24 +53,7 @@ void Application::Display(void)
 
 	//draw the center of the world
 	m_pMeshMngr->AddSphereToRenderList(glm::scale(vector3(0.1f)), C_RED, RENDER_WIRE);
-
-	//print the time on the screen
-#pragma region Debugging Information
-	//Print info on the screen
-	uint nEmptyLines = 21;
-	for (uint i = 0; i < nEmptyLines; ++i)
-		m_pMeshMngr->PrintLine("");//Add a line on top
-								   //m_pMeshMngr->Print("						");
-	m_pMeshMngr->PrintLine(m_pSystem->GetAppName(), C_YELLOW);
-
-	//m_pMeshMngr->Print("						");
-	m_pMeshMngr->Print("FPS:");
-	m_pMeshMngr->PrintLine(std::to_string(m_pSystem->GetFPS()), C_RED);
-
-	m_pMeshMngr->Print("Time: ");
-	m_pMeshMngr->PrintLine(std::to_string(fTimer), C_RED);
-#pragma endregion
-		
+			
 	//render list call
 	m_uRenderCallCount = m_pMeshMngr->Render();
 
