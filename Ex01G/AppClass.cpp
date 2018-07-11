@@ -84,10 +84,10 @@ void Application::Display(void)
 	matrix4 m4TransInverse = glm::translate(IDENTITY_M4, vector3(0.0f, 0.0f, 0.0f));
 	m4Model = m4TransInverse * m4Rotation * m4Translation;
 
-	// render the shapes in different positions
+	// render each shape, place in unique orbit positions
 	for (int i = 0; i < shapeCount; i++) {
-		//MyMesh* mesh = m_meshArr[i];
-		m_pMesh->Render(m4Projection, m4View, m4Model * glm::translate(currentOrbitList[i]));
+		MyMesh* mesh = m_meshArr[i];
+		mesh->Render(m4Projection, m4View, m4Model * glm::translate(currentOrbitList[i]));
 	}
 
 	// draw a skybox
