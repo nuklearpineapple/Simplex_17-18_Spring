@@ -5,9 +5,9 @@ void Application::InitVariables(void)
 	//(I'm at [0,0,10], looking at [0,0,0] and up is the positive Y axis)
 	m_pCameraMngr->SetPositionTargetAndUp(AXIS_Z * 20.0f, ZERO_V3, AXIS_Y);
 
-	//init the mesh
 	m_pMesh = new MyMesh();
 	m_pMesh->GenerateDiamond(3, 0.5f, 0.5f, C_GREEN);
+
 }
 void Application::Update(void)
 {
@@ -34,15 +34,16 @@ void Application::Display(void)
 	static uint uClock = m_pSystem->GenClock();
 	fTimer += m_pSystem->GetDeltaTime(uClock);
 
-#pragma region Calculate Orbit Stops
-
-	float fRadius = shapeCount * 0.3f;
-	
 	if (fTimer > 1) {
 		shapeCount++; // increment shapes on screen
 		m_pMesh->GenerateDiamond(shapeCount, 0.5f, 0.5f, C_GREEN);
+		m_meshArr.push_back(m_pMesh);
 		fTimer = m_pSystem->GetDeltaTime(uClock); // restart clock
 	}
+
+	#pragma region Calculate Orbit Stops
+
+	float fRadius = shapeCount * 0.3f;
 
 	static float currentX = (fRadius); // fSize is approximately orbit radius
 	static float currentY = 0;
@@ -52,7 +53,7 @@ void Application::Display(void)
 
 	std::vector<vector3> currentOrbitList; // array containing a set of coordinates for a specific orbit
 
-	// Within the current orbit being generated, prepare to fill vector<vector<vector3>> stops_list
+	// iterate through path generation
 	for (int j = 0; j < shapeCount; j++) {
 
 		float newX = (float)cos(currentAngle); // cosine of angle
@@ -70,11 +71,9 @@ void Application::Display(void)
 		currentOrbitList.push_back(currentPoint); // push back x y z coord into array
 	}
 
-	stops_list.push_back(currentOrbitList); // array containing arrays of coordinates for different orbits
-
 	fRadius += 0.5f;
 
-#pragma endregion 
+	#pragma endregion 
 	
 	// shape position
 	matrix4 m4Rotation = glm::rotate(IDENTITY_M4, fTimer, vector3(0.0f, 0.0f, 1.0f));
@@ -86,14 +85,13 @@ void Application::Display(void)
 	m4Model = m4TransInverse * m4Rotation * m4Translation;
 
 	// render the shapes in different positions
-	for (int i = 0; i < shapeCount; i++)
+	for (int i = 0; i < shapeCount; i++) {
+		//MyMesh* mesh = m_meshArr[i];
 		m_pMesh->Render(m4Projection, m4View, m4Model * glm::translate(currentOrbitList[i]));
+	}
 
 	// draw a skybox
 	m_pMeshMngr->AddSkyboxToRenderList();
-
-	//draw the center of the world
-	//m_pMeshMngr->AddSphereToRenderList(glm::scale(vector3(0.1f)), C_RED, RENDER_WIRE);
 
 	//render list call
 	m_uRenderCallCount = m_pMeshMngr->Render();

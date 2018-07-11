@@ -7,6 +7,8 @@ Date: 2017/05
 
 #include "Definitions.h"
 
+//struct MyMesh *meshes[500];
+
 class MyMesh
 {
 	bool m_bBinded = false;		//Binded flag

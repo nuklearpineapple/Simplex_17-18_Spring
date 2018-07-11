@@ -22,6 +22,8 @@ class Application
 	std::vector<std::vector<vector3>> stops_list; // destinations for shape to travel to
 	const double TWOPI = 2.0 * 3.1415926535897932384626433832795;
 
+	std::vector<MyMesh*> m_meshArr;
+
 	String m_sProgrammer = "Tim Ascencio - ta3755@g.rit.edu";
 private:
 	static ImGuiObject gui; //GUI object
