@@ -27,6 +27,11 @@ MyMesh::MyMesh()
 {
 	Init();
 }
+MyMesh::MyMesh(uint mySides)
+{
+	Init();
+	sides = mySides;
+}
 MyMesh::~MyMesh() { Release(); }
 MyMesh::MyMesh(MyMesh& other)
 {
@@ -330,8 +335,8 @@ void MyMesh::GenerateCone(float a_fRadius, float a_fHeight, int a_nSubdivisions,
 }
 void MyMesh::GenerateDiamond(uint a_uSides, float a_fHeight, float a_fWidth, vector3 a_v3Color)
 {
-	if (a_uSides < 3)
-		a_uSides = 3;
+	if (sides < 3)
+		sides = 3;
 
 	if (a_fHeight < 0.01f)
 		a_fHeight = 0.01f;
@@ -349,10 +354,10 @@ void MyMesh::GenerateDiamond(uint a_uSides, float a_fHeight, float a_fWidth, vec
 
 	float currentX = a_fWidth; // radius is current x + radius x=0
 	float currentY = 0; // radius is current y y=0
-	float step = ((float)TWOPI / a_uSides); // Define Angle based on subdivisions
+	float step = ((float)TWOPI / sides); // Define Angle based on subdivisions
 	float currentAngle = step; // store angle
 
-	for (int i = 0; i <= a_uSides; i++) {
+	for (int i = 0; i <= sides; i++) {
 
 		float newX = (float)cos(currentAngle); // cosine of angle
 		float newY = (float)sin(currentAngle); // sin of angle
@@ -380,6 +385,8 @@ void MyMesh::GenerateDiamond(uint a_uSides, float a_fHeight, float a_fWidth, vec
 
 		currentAngle += step; // next angle
 	}
+
+	//sides = a_uSides;
 
 	// -------------------------------
 

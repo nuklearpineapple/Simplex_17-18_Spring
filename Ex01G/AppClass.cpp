@@ -36,8 +36,9 @@ void Application::Display(void)
 
 	if (fTimer > 1) {
 		shapeCount++; // increment shapes on screen
-		m_pMesh->GenerateDiamond(shapeCount, 0.5f, 0.5f, C_GREEN);
-		m_meshArr.push_back(m_pMesh);
+		m_pMesh = new MyMesh(shapeCount);
+		m_pMesh->GenerateDiamond(shapeCount, 0.5f, 0.5f, C_GREEN); // make diamond with unique subdivisions
+		m_meshArr.push_back(m_pMesh); // push back unique diamond into array 
 		fTimer = m_pSystem->GetDeltaTime(uClock); // restart clock
 	}
 

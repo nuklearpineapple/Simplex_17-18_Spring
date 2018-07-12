@@ -24,6 +24,8 @@ class MyMesh
 
 	std::vector<vector3> stops_list;
 	const double TWOPI = 2.0 * 3.1415926535897932384626433832795;
+
+	uint sides;
 	
 public:
 	/*
@@ -44,6 +46,7 @@ public:
 	OUTPUT: class object
 	*/
 	MyMesh();
+	MyMesh(uint mySides);
 	/*
 	USAGE: Destructor
 	ARGUMENTS: ---
