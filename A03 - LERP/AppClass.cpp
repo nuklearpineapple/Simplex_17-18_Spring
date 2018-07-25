@@ -113,7 +113,7 @@ void Application::Display(void)
 		m_pMeshMngr->AddMeshToRenderList(m_shapeList[i], glm::rotate(m4Offset, 90.0f, AXIS_X));
 		/////////////////////////////////////////////////////////////////////////////////////
 		#pragma region LERP
-
+		
 		vector3 v3Start; //start point
 		vector3 v3End; //end point
 		v3Start = stops_list[i][route % stops_list[i].size()]; // start coordinate in current orbit

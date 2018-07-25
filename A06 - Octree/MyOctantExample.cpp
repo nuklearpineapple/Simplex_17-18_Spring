@@ -1,15 +1,18 @@
-//#include "MyOctantExample.h"
-//
-//using namespace Simplex;
-//
-//Simplex::MyOctant::MyOctant(uint a_nMaxLevel, uint a_nIdealEntityCount)
-//{
-//}
-//
-//Simplex::MyOctant::MyOctant(vector3 a_v3Center, float a_fSize)
-//{
-//}
-//
+#include "MyOctantExample.h"
+
+using namespace Simplex;
+
+Simplex::MyOctant::MyOctant(uint a_nMaxLevel, uint a_nIdealEntityCount)
+{
+
+}
+
+Simplex::MyOctant::MyOctant(vector3 a_v3center, float a_fsize)
+{
+	m_v3Center = a_v3center;
+	m_fSize = a_fsize;
+}
+
 //Simplex::MyOctant::MyOctant(MyOctant const & other)
 //{
 //}

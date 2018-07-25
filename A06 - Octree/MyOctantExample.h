@@ -88,7 +88,7 @@ public:
 	*/
 	float GetSize(void);
 	/*
-	USAGE: Gets the center of the octant in global scape
+	USAGE: Gets the center of the octant in global space
 	ARGUMENTS: ---
 	OUTPUT: Center of the octant in global space
 	*/
