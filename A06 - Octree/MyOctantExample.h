@@ -82,17 +82,53 @@ public:
 	*/
 	void Swap(MyOctant& other);
 	/*
+	USAGE: Get this octant's min position
+	ARGUMENTS: ---
+	OUTPUT: size of octant
+	*/
+	vector3 GetMin(void);
+	/*
+	USAGE: Sets this octant's min position
+	ARGUMENTS: ---
+	OUTPUT: size of octant
+	*/
+	void SetMin(vector3 min);
+	/*
+	USAGE: Get this octant's max position
+	ARGUMENTS: ---
+	OUTPUT: size of octant
+	*/
+	vector3 GetMax(void);
+	/*
+	USAGE: Sets this octant's max position
+	ARGUMENTS: ---
+	OUTPUT: size of octant
+	*/
+	void SetMax(vector3 max);
+	/*
 	USAGE: Gets this octant's size
 	ARGUMENTS: ---
 	OUTPUT: size of octant
 	*/
 	float GetSize(void);
 	/*
+	USAGE: Sets this octant's size
+	ARGUMENTS: ---
+	OUTPUT: size of octant
+	*/
+	void SetSize(float size);
+	/*
 	USAGE: Gets the center of the octant in global space
 	ARGUMENTS: ---
 	OUTPUT: Center of the octant in global space
 	*/
 	vector3 GetCenterGlobal(void);
+	/*
+	USAGE: Sets the center of the octant in global space
+	ARGUMENTS: ---
+	OUTPUT: Center of the octant in global space
+	*/
+	void SetCenterGlobal(vector3 center);
 	/*
 	USAGE: Gets the min corner of the octant in global space
 	ARGUMENTS: ---
@@ -198,7 +234,30 @@ public:
 	OUTPUT: ---
 	*/
 	uint GetOctantCount(void);
-
+	/*
+	Check if octant contains an entity
+	*/
+	bool Contains(MyRigidBody* rigidbody);
+	/*
+	Check if has point
+	*/
+	bool HasPoint(vector3 point);
+	/*
+	Add the id of the entity to list
+	*/
+	void AddEntityID(uint uID);
+	/*
+	check if octant has entity accessed by the ID provided
+	*/
+	bool HasEntity(uint uID);
+	/*
+	Populate octant with entity based on unique ID
+	*/
+	void Populate(uint uID);
+	/*
+	*/
+	std::vector<uint> GetEntityList();
+	
 private:
 	/*
 	USAGE: Deallocates member fields

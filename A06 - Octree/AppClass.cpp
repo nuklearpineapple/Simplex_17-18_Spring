@@ -10,6 +10,8 @@ void Application::InitVariables(void)
 
 	m_pLightMngr->SetPosition(vector3(0.0f, 3.0f, 13.0f), 1); //set the position of first light (0 is reserved for ambient light)
 
+	m_pOctant = new MyOctant(vector3(0.0f), 36.0f);
+
 #ifdef DEBUG
 	uint uInstances = 900;
 #else
@@ -27,6 +29,11 @@ void Application::InitVariables(void)
 			vector3 v3Position = vector3(glm::sphericalRand(34.0f));
 			matrix4 m4Position = glm::translate(v3Position);
 			m_pEntityMngr->SetModelMatrix(m4Position);
+
+			m_pOctant->Populate(uIndex);
+
+			// contains entity check
+			//m_pOctant->Contains(m_pEntityMngr->GetRigidBody(uIndex));
 		}
 	}
 	m_uOctantLevels = 1;
