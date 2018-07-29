@@ -31,13 +31,15 @@ void Application::InitVariables(void)
 			m_pEntityMngr->SetModelMatrix(m4Position);
 
 			m_pOctant->Populate(uIndex);
+			m_pOctant->SetEntityMngr(m_pEntityMngr);
 
 			// contains entity check
 			//m_pOctant->Contains(m_pEntityMngr->GetRigidBody(uIndex));
 		}
 	}
 	m_uOctantLevels = 1;
-	m_pEntityMngr->Update();
+	m_pOctant->Update(); // custom update
+	//m_pEntityMngr->Update();
 }
 void Application::Update(void)
 {
@@ -51,7 +53,10 @@ void Application::Update(void)
 	CameraRotation();
 	
 	//Update Entity Manager
-	m_pEntityMngr->Update();
+	//m_pEntityMngr->Update();
+
+	// Custom update
+	m_pOctant->Update();
 
 	//Add objects to render list
 	m_pEntityMngr->AddEntityToRenderList(-1, true);

@@ -53,23 +53,40 @@ void Simplex::MyOctant::SetSize(float size)
 	m_fSize = size;
 }
 
+MyOctant* Simplex::MyOctant::GetOctantContainingEntity(MyRigidBody* rigidbody) 
+{
+	if (m_lChild.empty()) {
+		if (HasPoint(rigidbody->GetCenterGlobal())) {
+			return this;
+		}
+		else {
+			return nullptr;
+		}
+	}
+	else {
+		for (MyOctant* octant : m_lChild) {
+			MyOctant* oct = octant->GetOctantContainingEntity(rigidbody);
+			if (oct != nullptr) {
+				return oct;
+			}
+		}
+	}
+	return nullptr;
+}
+
 bool Simplex::MyOctant::Contains(MyRigidBody* rigidbody)
 {
-	// get position for rigidbody
-	//vector3 v3Position = rigidbody->GetCenterGlobal();
-	return false;
+	vector3 center = rigidbody->GetCenterGlobal();
+	return HasPoint(center);
 }
 
 bool Simplex::MyOctant::HasPoint(vector3 v3Position)
 {
-	/*std::cout << v3Position.x << v3Position.y << v3Position.z << " - ";
-	std::cout << m_v3Min.x << m_v3Min.y << m_v3Min.z << " - ";
-	std::cout << m_v3Max.x << m_v3Max.y << m_v3Max.z << " - ";
-	*/
 	if (m_lChild.empty()) {
 		if (v3Position.x > m_v3Min.x && v3Position.y > m_v3Min.y && v3Position.z > m_v3Min.z) { // Check greater than minimum
-			if (v3Position.x < m_v3Max.x && v3Position.y < m_v3Max.y && v3Position.z < m_v3Max.z) // check less than maximum
+			if (v3Position.x < m_v3Max.x && v3Position.y < m_v3Max.y && v3Position.z < m_v3Max.z) { // check less than maximum
 				return true;
+			}
 		}
 	}
 	else {
@@ -81,13 +98,12 @@ bool Simplex::MyOctant::HasPoint(vector3 v3Position)
 			}
 		}
 	}
-	std::cout << "ERR: v3Position not found";
 	return false;
 }
 
 void Simplex::MyOctant::AddEntityID(uint uID)
 {
-
+	m_EntityList.push_back(uID);
 }
 
 bool Simplex::MyOctant::HasEntity(uint uID)
@@ -114,6 +130,11 @@ std::vector<uint> Simplex::MyOctant::GetEntityList()
 	return m_EntityList;
 }
 
+void Simplex::MyOctant::SetEntityMngr(MyEntityManager * entityMngr)
+{
+	m_pEntityMngr = entityMngr;
+}
+
 void Simplex::MyOctant::Subdivide(void)
 {
 	vector3 newMax = ZERO_V3; // store new max positions 
@@ -126,42 +147,42 @@ void Simplex::MyOctant::Subdivide(void)
 			newMax = vector3(0.0f);
 			newMin = vector3(0.0f);
 			newCenter = vector3(0.0f);
-			if (i == 1)
+			if (i == 1) // back right top
 			{
 				newMax = m_v3Max;
 				newMin = m_v3Center;
 			}
-			if (i == 2)
+			if (i == 2) // back left top
 			{
 				newMax = vector3(m_v3Center.x, m_v3Max.y, m_v3Max.z);
 				newMin = vector3(m_v3Min.x, m_v3Center.y, m_v3Center.z);
 			}
-			if (i == 3)
+			if (i == 3) // back right bottom
 			{
 				newMax = vector3(m_v3Max.x, m_v3Center.y, m_v3Max.z);
 				newMin = vector3(m_v3Center.x, m_v3Min.y, m_v3Center.z);
 			}
-			if (i == 4)
+			if (i == 4) // back left bottom
 			{
 				newMax = vector3(m_v3Center.x, m_v3Center.y, m_v3Max.z);
 				newMin = vector3(m_v3Min.x, m_v3Min.y, m_v3Center.z);
 			}
-			if (i == 5)
+			if (i == 5) // front right top
 			{
 				newMax = vector3(m_v3Max.x, m_v3Max.y, m_v3Center.z);
 				newMin = vector3(m_v3Center.x, m_v3Center.y, m_v3Min.z);
 			}
-			if (i == 6)
+			if (i == 6) // front left top
 			{
 				newMax = vector3(m_v3Center.x, m_v3Max.y, m_v3Center.z);
 				newMin = vector3(m_v3Min.x, m_v3Center.y, m_v3Min.z);
 			}
-			if (i == 7)
+			if (i == 7) // front right bottom
 			{
 				newMax = vector3(m_v3Max.x, m_v3Center.y, m_v3Center.z);
 				newMin = vector3(m_v3Center.x, m_v3Min.y, m_v3Min.z);
 			}
-			if (i == 8)
+			if (i == 8) // front left bottom
 			{
 				newMax = m_v3Center;
 				newMin = m_v3Min;
@@ -176,10 +197,48 @@ void Simplex::MyOctant::Subdivide(void)
 			m_lChild.push_back(octant);
 
 			for (uint id : m_EntityList) {
+				MyRigidBody* rigidbody = m_pEntityMngr->GetRigidBody(id);
+				vector3 center = rigidbody->GetCenterGlobal();
+
+				// assign id for each entity found in this octant
+				if (octant->HasPoint(center)) {
+					octant->AddEntityID(id);
+				}
 
 			}
+
+			std::cout << "COUNT" << i << "---" << octant->GetEntityList().size();
 	}
-	/*for(MyOctant* octant : m_lChild)
-		std::cout << "CENTER:" << octant->GetCenterGlobal().x << "  " << octant->GetCenterGlobal().y << "  " << octant->GetCenterGlobal().z;
-	*/
+}
+
+void Simplex::MyOctant::Update(void)
+{
+	//Clear all collisions
+	for (uint i = 0; i < m_EntityList.size(); i++)
+	{
+		MyEntity* entity = m_pEntityMngr->GetEntity(m_EntityList[i]);
+		entity->ClearCollisionList();
+	}
+
+	for (uint i=0; i < m_EntityList.size(); i++)
+	{
+		MyEntity* entity = m_pEntityMngr->GetEntity(m_EntityList[i]);
+		MyRigidBody* rb = entity->GetRigidBody();
+
+		MyOctant* oct = GetOctantContainingEntity(rb);
+		if (oct != nullptr) 
+		{
+			for (uint j = i + 1; j < m_EntityList.size(); j++)
+			{ 
+				MyEntity* otherEntity = m_pEntityMngr->GetEntity(m_EntityList[j]);
+				MyRigidBody* otherRB = entity->GetRigidBody();
+
+				if (oct->HasPoint(otherRB->GetCenterGlobal())) 
+				{
+					rb->IsColliding(otherRB);
+					//std::cout << "collision?";
+				}
+			}
+		}
+	}
 }

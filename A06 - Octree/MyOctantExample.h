@@ -10,6 +10,8 @@ Date: 2017/07
 namespace Simplex
 {
 
+class MyEntityManager; // forward declaration
+
 //System Class
 class MyOctant
 {
@@ -257,6 +259,16 @@ public:
 	/*
 	*/
 	std::vector<uint> GetEntityList();
+	/*
+	*/
+	void SetEntityMngr(MyEntityManager* entityMngr);
+	/*
+	*/
+	MyOctant* GetOctant(MyOctant* octant);
+	/*
+	*/
+	MyOctant* GetOctantContainingEntity(MyRigidBody* rigidbody);
+	void Update(void);
 	
 private:
 	/*

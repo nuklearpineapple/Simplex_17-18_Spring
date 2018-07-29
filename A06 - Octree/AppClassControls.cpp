@@ -131,7 +131,9 @@ void Application::ProcessKeyReleased(sf::Event a_event)
 		{
 			m_pEntityMngr->ClearDimensionSetAll();
 			++m_uOctantLevels;
-			std::cout << "+ SIGN";
+			std::vector<uint> eList = m_pOctant->GetEntityList();
+
+			m_pOctant->Subdivide();
 			/*
 			SafeDelete(m_pOctant);
 			m_pOctant = new MyOctant(m_uOctantLevels, 5);
@@ -160,17 +162,6 @@ void Application::ProcessKeyReleased(sf::Event a_event)
 			std::vector<uint> eList = m_pOctant->GetEntityList();
 			
 			m_pOctant->Subdivide();
-
-			//for (uint x : eList) {
-				//std::cout << x << " - ";
-				//MyRigidBody* rb = m_pEntityMngr->GetRigidBody(x);
-				//vector3 center = rb->GetCenterGlobal();
-				//bool isPoint = m_pOctant->HasPoint(center);
-				/*if(isPoint == true)
-					std::cout << "- true - ";
-				else std::cout << "- false -";*/
-				//std::cout << center.x << center.y << center.z;
-			//}
 			/*
 			SafeDelete(m_pOctant);
 			m_pOctant = new MyOctant(m_uOctantLevels, 5);
